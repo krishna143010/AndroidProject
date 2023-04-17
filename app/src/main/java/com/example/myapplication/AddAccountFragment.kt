@@ -24,30 +24,18 @@ class AddAccountFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val cityList = mutableListOf(
-            Cities("London", "1"),
-            Cities("Miami", "2"),
-            Cities("California", "3"),
-            Cities("Los Angeles", "4"),
-            Cities("Chicago", "5"),
-            Cities("Houston", "6")
+            Cities("London", "6"),
+            Cities("Miami", "12"),
+            Cities("California", "13"),
+            Cities("Los Angeles", "40"),
+            Cities("Chicago", "15"),
+            Cities("Houston", "61")
         )
         val clientNameACTV: AutoCompleteTextView=view.findViewById<AutoCompleteTextView>(R.id.cityAutoCompleteView)
         val adapterForClientName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,cityList)
-        var clientId: Long? =null
-        clientNameACTV.setOnItemClickListener { parent, view, position, id -> (
-            run {
-                println("ID is $id")
-                clientId=id
-            }
-        )}
-
-        val languages = resources.getStringArray(R.array.Languages)
-
-        //val arrayAdapter=GetSearchAdapter(this.requireContext(),R.layout.fragment_add_account,android.R.layout.simple_list_item_1,arr)
         clientNameACTV.setAdapter(adapterForClientName)
-
+        var clientId: Long? =null
         val addAccountButtonView= view.findViewById<Button>(R.id.addAccountButtonView)
-        val clientNameEditTextView=view.findViewById<EditText>(R.id.clientNameEditTextView)
         val accountNameEditTextView=view.findViewById<EditText>(R.id.accountNameEditTextView)
         val accountIdentifierEditTextView=view.findViewById<EditText>(R.id.accountIdentifierEditTextView)
         val preferredPaymentMethod=view.findViewById<EditText>(R.id.preferredPaymentMethodEditTextView)
@@ -59,36 +47,33 @@ class AddAccountFragment : Fragment() {
             R.array.currency_types,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
             spinner.adapter = adapter
         }
+        clientNameACTV.setOnItemClickListener { parent, view, position, id -> (
+            run {
+                clientId=id
+                println("Client Id is $clientId")
+            }
+        )}
 
         addAccountButtonView.setOnClickListener(){
             currencyTypeSelected=spinner.selectedItem.toString()
-            println("Currency Selected "+currencyTypeSelected)
-            println("Account Name entered is:"+clientNameEditTextView.text.toString())
-            if(!Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]").matches(clientNameEditTextView.text.toString())){
+            println("Field Value "+clientNameACTV.text.toString()+" cityList Value "+cityList.getOrNull(clientId.toString().toInt()).toString())
+            if(!Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]").matches(accountNameEditTextView.text.toString())){
 
                 //println("Else Loop Should not be empy from Println")
-                clientNameEditTextView.setError("Name invalid")
-            }else if(!Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]").matches(accountNameEditTextView.text.toString())){
-
-                //println("Else Loop Should not be empy from Println")
-                accountNameEditTextView.setError("Account Name invalid")
+                accountNameEditTextView.setError("Account Name should Contain Only Alphabets and Space in between")
             }else if(!Regex("[0-9]*").matches(accountIdentifierEditTextView.text.toString())){
-
-                //println("Else Loop Should not be empy from Println")
-                accountIdentifierEditTextView.setError("Name invalid")
+                accountIdentifierEditTextView.setError("Account Number Should Contain Only the digits")
             }else if(!Regex("[A-Za-z0-9@]*").matches(preferredPaymentMethod.text.toString())){
-
-                //println("Else Loop Should not be empy from Println")
-                preferredPaymentMethod.setError("UPI invalid")
+                preferredPaymentMethod.setError("Payment method invalid")
+            }else if(cityList.getOrNull(clientId.toString().toInt()).toString()==clientNameACTV.text.toString() || cityList.getOrNull(clientId.toString().toInt()).toString()==null){
+                clientNameACTV.setError("Client Name is Not Valid")
             }else{
                 println("iF Loop Should not be empy from Println")
                 val myDBHelper=DBAccessClass(this.requireContext())
-                val insertStatus:Long=myDBHelper.insertAccounts(accountNameEditTextView.text.toString(),accountIdentifierEditTextView.text.toString(),preferredPaymentMethod.text.toString(),true, currencyTypeSelected.toString(),1)
+                val insertStatus:Long=myDBHelper.insertAccounts(accountNameEditTextView.text.toString(),accountIdentifierEditTextView.text.toString(),preferredPaymentMethod.text.toString(),true, currencyTypeSelected.toString(),clientId.toString().toInt())
                 if(insertStatus>0){
                     Snackbar.make(it,"Account \""+accountNameEditTextView.text.toString()+"\" add Success",
                         Snackbar.LENGTH_LONG).show()

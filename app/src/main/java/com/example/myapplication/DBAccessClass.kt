@@ -8,9 +8,14 @@ import android.util.Log
 import java.util.Date
 import kotlin.properties. Delegates
 class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",null,1) {
+    override fun onConfigure(db: SQLiteDatabase) {
+        db.setForeignKeyConstraintsEnabled(true)
+    }
     override fun onCreate(myDB: SQLiteDatabase?) {
         println("onCreate Before FundManagerAccounts table creating")
+
         if (myDB != null) { //myDB already exists
+            myDB.execSQL("PRAGMA foreign_keys=ON;")
             val fmtExists: Unit? = myDB?.execSQL("SELECT name FROM sqlite_master WHERE type='table' AND name = 'FundManagerAccounts'")
             if (fmtExists != null) {
                 println("FundManagerAccounts table creating")
@@ -20,12 +25,12 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
             val clientExists: Unit? = myDB?.execSQL("SELECT name FROM sqlite_master WHERE type='table' AND name = 'Clients'")
             if (clientExists != null) {
                 //create table if it does not exist
-                myDB.execSQL ("create table Clients (clientID INTEGER primary key AutoIncrement, clientName text, activeStatus boolean, deleteStatus boolean,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,fmIdAssociated INTEGER ,UNIQUE(fmIdAssociated, clientName) ON CONFLICT REPLACE,FOREIGN KEY(fmIdAssociated) REFERENCES FundManagerAccounts(fmID)) ")
+                myDB.execSQL ("create table Clients (clientID INTEGER primary key AutoIncrement, clientName text, activeStatus boolean, deleteStatus boolean,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,fmIdAssociated INTEGER,FOREIGN KEY(fmIdAssociated) REFERENCES FundManagerAccounts(fmID)) ")
             }
             val actExists: Unit? = myDB?.execSQL("SELECT name FROM sqlite_master WHERE type='table' AND name = 'Accounts'")
             if (actExists != null) {
                 //create table if it does not exist
-                myDB.execSQL ("create table Accounts (accountID INTEGER primary key AutoIncrement, accountNumber text, upiId text UNIQUE,activeStatus boolean,currencyType text, accountName text,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,clientIDAssociated INTEGER ,UNIQUE(accountName, clientIDAssociated) ON CONFLICT REPLACE,FOREIGN KEY(clientIDAssociated) REFERENCES Clients(clientID)) ")
+                myDB.execSQL ("create table Accounts (accountID INTEGER primary key AutoIncrement, accountNumber text, upiId text,activeStatus boolean,currencyType text, accountName text,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,clientIDAssociated INTEGER ,FOREIGN KEY(clientIDAssociated) REFERENCES Clients(clientID)) ")
             }
             val txsExists: Unit? = myDB?.execSQL("SELECT name FROM sqlite_master WHERE type='table' AND name = 'TransactionsTable'")
             if (txsExists != null) {
@@ -76,7 +81,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         contentValues.put ("accountName", accountName)
         contentValues.put ("accountNumber", accountNumber)
         contentValues.put ("upiId", upiId)
-        contentValues.put ("status", status)
+        contentValues.put ("activeStatus", status)
         contentValues.put ("currencyType", currencyType)
         contentValues.put ("clientIDAssociated", clientIDAssociated)
         val result = myDB. insert ("Accounts", null,contentValues) //nullcolumnhack is: when you want to instert an empty row except for the auto generated id, you will need nullcolumnHack, when content values will be null.
