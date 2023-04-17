@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="Add Client"
+        android:id="@+id/addClient"/>
+    <item
+        android:title="Add Account"
+        android:id="@+id/addAccount"/>
+    <item
+        android:title="Add Fund Manager"
+        android:id="@+id/addFM"/>
+
+</menu>

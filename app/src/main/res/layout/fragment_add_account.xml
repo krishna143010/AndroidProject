@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AddAccountFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="24dp"
+        android:layout_gravity="center"
+        android:text="Add Client Account"/>
+    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+        android:id="@+id/cityAutoCompleteView"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:paddingStart="16dp"
+        android:hint="Auto Complete"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
+        android:completionThreshold="2"/>
+    <AutoCompleteTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="25dp"
+        android:id="@+id/clientNameAC"
+        android:textAlignment="center"
+        android:hint="Select Client Name"></AutoCompleteTextView>
+    <EditText
+        android:id="@+id/clientNameEditTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Enter Client Name"
+        android:inputType="textPersonName"
+        android:paddingTop="25dp"
+        android:text=""
+        android:textAlignment="center" />
+    <EditText
+        android:id="@+id/accountNameEditTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Enter Account Name"
+        android:inputType="textPersonName"
+        android:paddingTop="25dp"
+        android:text=""
+        android:textAlignment="center" />
+    <EditText
+        android:id="@+id/accountIdentifierEditTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Enter Account Identifier"
+        android:inputType="textPersonName"
+        android:paddingTop="25dp"
+        android:text=""
+        android:textAlignment="center" />
+    <EditText
+        android:id="@+id/preferredPaymentMethodEditTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Mobile Number / UPI / Zelle"
+        android:inputType="textPersonName"
+        android:paddingTop="25dp"
+        android:text=""
+        android:textAlignment="center" />
+    <Spinner
+        android:id="@+id/accountCurrencyTypeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:ems="10"
+        android:paddingTop="25dp"
+        android:contentDescription="Currency Type"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/addAccountButtonView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Add Account"
+        android:layout_marginTop="25dp"
+        android:layout_gravity="center"
+        android:textSize="14sp" />
+
+</LinearLayout>
