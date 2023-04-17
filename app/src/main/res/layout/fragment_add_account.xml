@@ -14,7 +14,7 @@
         android:textSize="24dp"
         android:layout_gravity="center"
         android:text="Add Client Account"/>
-    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+    <AutoCompleteTextView
         android:id="@+id/cityAutoCompleteView"
         android:layout_width="match_parent"
         android:layout_height="55dp"
@@ -23,13 +23,6 @@
         android:imeOptions="actionNext"
         android:singleLine="true"
         android:completionThreshold="2"/>
-    <AutoCompleteTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="25dp"
-        android:id="@+id/clientNameAC"
-        android:textAlignment="center"
-        android:hint="Select Client Name"></AutoCompleteTextView>
     <EditText
         android:id="@+id/clientNameEditTextView"
         android:layout_width="match_parent"

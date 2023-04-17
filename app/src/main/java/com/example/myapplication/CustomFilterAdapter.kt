@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.TextView
 
-class CityAdapter(
+class CustomFilterAdapter(
     private val mContext: Context,
     private val mLayoutResourceId: Int,
     cities: List<Cities>

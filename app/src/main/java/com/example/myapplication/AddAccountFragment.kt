@@ -23,7 +23,6 @@ class AddAccountFragment : Fragment() {
     @SuppressLint("ResourceType")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val myAutoCompleteTextView: AutoCompleteTextView=view.findViewById<AutoCompleteTextView>(R.id.cityAutoCompleteView)
         val cityList = mutableListOf(
             Cities("London", "1"),
             Cities("Miami", "2"),
@@ -32,38 +31,20 @@ class AddAccountFragment : Fragment() {
             Cities("Chicago", "5"),
             Cities("Houston", "6")
         )
-        //val adapter = CityAdapter(this.requireContext(),R.layout.itemforautocomplete,cityList)
-        val adapter = CityAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,cityList)
-        myAutoCompleteTextView.setOnDismissListener {
-            println("Dismissed")
-        }
-        /*adapter.filter = object : Filter() {
-            var context: Context? = null
-            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val results = FilterResults()
-                if (constraint != null) {
-                    val filteredList = myItems.filter { it.contains(constraint, ignoreCase = true) }
-                    results.values = filteredList
-                    results.count = filteredList.size
-                }
-                return results
+        val clientNameACTV: AutoCompleteTextView=view.findViewById<AutoCompleteTextView>(R.id.cityAutoCompleteView)
+        val adapterForClientName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,cityList)
+        var clientId: Long? =null
+        clientNameACTV.setOnItemClickListener { parent, view, position, id -> (
+            run {
+                println("ID is $id")
+                clientId=id
             }
+        )}
 
-            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                if (results != null && results.count > 0) {
-                    val filteredList = results.values as List<String>
-                    val adapter = context?.let { ArrayAdapter(it, android.R.layout.simple_dropdown_item_1line, filteredList) }
-                    myAutoCompleteTextView.setAdapter(adapter)
-                } else {
-                    myAutoCompleteTextView.setAdapter(null)
-                }
-            }
-        }*/
         val languages = resources.getStringArray(R.array.Languages)
 
         //val arrayAdapter=GetSearchAdapter(this.requireContext(),R.layout.fragment_add_account,android.R.layout.simple_list_item_1,arr)
-        myAutoCompleteTextView.setAdapter(adapter)
-        //clientNameAc.showDropDown()
+        clientNameACTV.setAdapter(adapterForClientName)
 
         val addAccountButtonView= view.findViewById<Button>(R.id.addAccountButtonView)
         val clientNameEditTextView=view.findViewById<EditText>(R.id.clientNameEditTextView)
@@ -83,9 +64,6 @@ class AddAccountFragment : Fragment() {
             // Apply the adapter to the spinner
             spinner.adapter = adapter
         }
-//        spinner.setOnItemClickListener(){
-
-//        }
 
         addAccountButtonView.setOnClickListener(){
             currencyTypeSelected=spinner.selectedItem.toString()
