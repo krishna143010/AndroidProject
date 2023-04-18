@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.database.Cursor
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,16 +24,27 @@ class AddAccountFragment : Fragment() {
     @SuppressLint("ResourceType")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val cityList = mutableListOf(
-            Cities("London", "6"),
-            Cities("Miami", "12"),
-            Cities("California", "13"),
-            Cities("Los Angeles", "40"),
-            Cities("Chicago", "15"),
-            Cities("Houston", "61")
-        )
+
+        val dbAccessClass=DBAccessClass(this.requireContext())
+        val clientsList:MutableList<NameAndId> = dbAccessClass.getClientNames()
+        /*val cityList:MutableList<NameAndId> = mutableListOf()
+        if (clientData.moveToFirst()) {
+            do {
+                //val data: String = clientData.getString(clientData.getColumnIndex("data"))
+                cityList.add(NameAndId(clientData.getString(clientData.getColumnIndex("clientName")),clientData.getString(clientData.getColumnIndex("clientID"))))
+                // do what ever you want here
+            } while (clientData.moveToNext())
+        }*/
+        /*val cityList = mutableListOf(
+            NameAndId("London", "6"),
+            NameAndId("Miami", "12"),
+            NameAndId("California", "13"),
+            NameAndId("Los Angeles", "40"),
+            NameAndId("Chicago", "15"),
+            NameAndId("Houston", "61")
+        )*/
         val clientNameACTV: AutoCompleteTextView=view.findViewById<AutoCompleteTextView>(R.id.cityAutoCompleteView)
-        val adapterForClientName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,cityList)
+        val adapterForClientName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,clientsList)
         clientNameACTV.setAdapter(adapterForClientName)
         var clientId: Long? =null
         val addAccountButtonView= view.findViewById<Button>(R.id.addAccountButtonView)
@@ -58,8 +70,12 @@ class AddAccountFragment : Fragment() {
         )}
 
         addAccountButtonView.setOnClickListener(){
+            println("Client Id is $clientId and Its validity is:"+clientsList.contains(NameAndId(clientNameACTV.text.toString(),clientId.toString())))
             currencyTypeSelected=spinner.selectedItem.toString()
-            println("Field Value "+clientNameACTV.text.toString()+" cityList Value "+cityList.getOrNull(clientId.toString().toInt()).toString())
+            //checkClientExistance(clientNameACTV.text.toString())
+
+            /*currencyTypeSelected=spinner.selectedItem.toString()
+            println("Field Value "+clientNameACTV.text.toString()+" cityList Value "+cityList.getOrNull(clientId.toString().toInt()).toString())*/
             if(!Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]").matches(accountNameEditTextView.text.toString())){
 
                 //println("Else Loop Should not be empy from Println")
@@ -68,8 +84,8 @@ class AddAccountFragment : Fragment() {
                 accountIdentifierEditTextView.setError("Account Number Should Contain Only the digits")
             }else if(!Regex("[A-Za-z0-9@]*").matches(preferredPaymentMethod.text.toString())){
                 preferredPaymentMethod.setError("Payment method invalid")
-            }else if(cityList.getOrNull(clientId.toString().toInt()).toString()==clientNameACTV.text.toString() || cityList.getOrNull(clientId.toString().toInt()).toString()==null){
-                clientNameACTV.setError("Client Name is Not Valid")
+            }else if(!clientsList.contains(NameAndId(clientNameACTV.text.toString(),clientId.toString()))){
+                clientNameACTV.setError("No Client with "+clientNameACTV.text.toString()+" name available")
             }else{
                 println("iF Loop Should not be empy from Println")
                 val myDBHelper=DBAccessClass(this.requireContext())
@@ -85,5 +101,9 @@ class AddAccountFragment : Fragment() {
         }
 
     }
+
+    /*private fun checkClientExistance(toString: String):Long{
+
+    }*/
 
 }

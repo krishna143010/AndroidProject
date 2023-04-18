@@ -1,4 +1,5 @@
 package com.example.myapplication
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -10,12 +11,11 @@ import kotlin.properties. Delegates
 class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",null,1) {
     override fun onConfigure(db: SQLiteDatabase) {
         db.setForeignKeyConstraintsEnabled(true)
+        db.execSQL("PRAGMA foreign_keys=ON;")
     }
     override fun onCreate(myDB: SQLiteDatabase?) {
         println("onCreate Before FundManagerAccounts table creating")
-
         if (myDB != null) { //myDB already exists
-            myDB.execSQL("PRAGMA foreign_keys=ON;")
             val fmtExists: Unit? = myDB?.execSQL("SELECT name FROM sqlite_master WHERE type='table' AND name = 'FundManagerAccounts'")
             if (fmtExists != null) {
                 println("FundManagerAccounts table creating")
@@ -25,12 +25,12 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
             val clientExists: Unit? = myDB?.execSQL("SELECT name FROM sqlite_master WHERE type='table' AND name = 'Clients'")
             if (clientExists != null) {
                 //create table if it does not exist
-                myDB.execSQL ("create table Clients (clientID INTEGER primary key AutoIncrement, clientName text, activeStatus boolean, deleteStatus boolean,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,fmIdAssociated INTEGER,FOREIGN KEY(fmIdAssociated) REFERENCES FundManagerAccounts(fmID)) ")
+                myDB.execSQL ("create table Clients (clientID INTEGER primary key AutoIncrement, clientName text, activeStatus boolean, deleteStatus boolean,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,fmIdAssociated INTEGER ,UNIQUE(fmIdAssociated, clientName),FOREIGN KEY(fmIdAssociated) REFERENCES FundManagerAccounts(fmID)) ")
             }
             val actExists: Unit? = myDB?.execSQL("SELECT name FROM sqlite_master WHERE type='table' AND name = 'Accounts'")
             if (actExists != null) {
                 //create table if it does not exist
-                myDB.execSQL ("create table Accounts (accountID INTEGER primary key AutoIncrement, accountNumber text, upiId text,activeStatus boolean,currencyType text, accountName text,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,clientIDAssociated INTEGER ,FOREIGN KEY(clientIDAssociated) REFERENCES Clients(clientID)) ")
+                myDB.execSQL ("create table Accounts (accountID INTEGER primary key AutoIncrement, accountNumber text, upiId text,activeStatus boolean,currencyType text, accountName text,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,clientIDAssociated INTEGER ,UNIQUE(accountName, clientIDAssociated),FOREIGN KEY(clientIDAssociated) REFERENCES Clients(clientID)) ")
             }
             val txsExists: Unit? = myDB?.execSQL("SELECT name FROM sqlite_master WHERE type='table' AND name = 'TransactionsTable'")
             if (txsExists != null) {
@@ -250,5 +250,25 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         //Ithat is all we need> close the cursor. return    the above variables as a string.
         cursor.close ()
         return "There are SnumberOfRows rows in myCustomers table and $number0fColumns columns in each row."
+    }
+
+    @SuppressLint("Range")
+    fun getClientNames() : MutableList<NameAndId> {
+        val myDB = this. readableDatabase // read access
+        val cursor : Cursor = myDB. rawQuery ("Select clientName,clientID from Clients", null)
+        /*val number0fColumns = cursor. columnCount //get the number of columns count.
+        val number0fRows = cursor.count // just the  number of record
+        //val colNames = cursor. columnNames. joinToString " } //getting comma separated values of column names.
+        //Ithat is all we need> close the cursor. return    the above variables as a string.*/
+        val rowsList:MutableList<NameAndId> = mutableListOf()
+        if (cursor.moveToFirst()) {
+            do {
+                //val data: String = clientData.getString(clientData.getColumnIndex("data"))
+                rowsList.add(NameAndId(cursor.getString(cursor.getColumnIndex("clientName")),cursor.getString(cursor.getColumnIndex("clientID"))))
+                // do what ever you want here
+            } while (cursor.moveToNext())
+        }
+        cursor.close ()
+        return rowsList
     }
 }

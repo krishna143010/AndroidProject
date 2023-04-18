@@ -1,4 +1,4 @@
 package com.example.myapplication
 
-data class Cities(val definition: String,
+data class NameAndId(val definition: String,
                   val id: String)

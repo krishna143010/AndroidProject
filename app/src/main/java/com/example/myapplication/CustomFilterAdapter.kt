@@ -11,16 +11,16 @@ import android.widget.TextView
 class CustomFilterAdapter(
     private val mContext: Context,
     private val mLayoutResourceId: Int,
-    cities: List<Cities>
+    NameAndId: List<NameAndId>
 ) :
-    ArrayAdapter<Cities>(mContext, mLayoutResourceId, cities) {
-    private val city: MutableList<Cities> = ArrayList(cities)
-    private var allCities: List<Cities> = ArrayList(cities)
+    ArrayAdapter<NameAndId>(mContext, mLayoutResourceId, NameAndId) {
+    private val city: MutableList<NameAndId> = ArrayList(NameAndId)
+    private var allNameAndId: List<NameAndId> = ArrayList(NameAndId)
 
     override fun getCount(): Int {
         return city.size
     }
-    override fun getItem(position: Int): Cities {
+    override fun getItem(position: Int): NameAndId {
         return city[position]
     }
     override fun getItemId(position: Int): Long {
@@ -34,8 +34,8 @@ class CustomFilterAdapter(
             convertView = inflater.inflate(mLayoutResourceId, parent, false)
         }
         try {
-            val city: Cities = getItem(position)
-            println("Cities List city.definition:"+city.definition)
+            val city: NameAndId = getItem(position)
+            println("NameAndId List city.definition:"+city.definition)
 
             val cityAutoCompleteView = convertView!!.findViewById<View>(android.R.id.text1) as TextView
             cityAutoCompleteView.text = city.definition
@@ -47,13 +47,13 @@ class CustomFilterAdapter(
     override fun getFilter(): Filter {
             return object : Filter() {
                 override fun convertResultToString(resultValue: Any) :String {
-                    return (resultValue as Cities).definition
+                    return (resultValue as NameAndId).definition
                 }
                 override fun performFiltering(constraint: CharSequence?): FilterResults {
                     val filterResults = FilterResults()
                     if (constraint != null) {
-                        val citySuggestion: MutableList<Cities> = ArrayList()
-                        for (city in allCities) {
+                        val citySuggestion: MutableList<NameAndId> = ArrayList()
+                        for (city in allNameAndId) {
                             if (city.definition.toLowerCase().contains(constraint.toString().toLowerCase())
                             ) {
                                 citySuggestion.add(city)
@@ -71,13 +71,13 @@ class CustomFilterAdapter(
                     city.clear()
                     if (results.count > 0) {
                         for (result in results.values as List<*>) {
-                            if (result is Cities) {
+                            if (result is NameAndId) {
                                 city.add(result)
                             }
                         }
                         notifyDataSetChanged()
                     } else if (constraint == null) {
-                        city.addAll(allCities)
+                        city.addAll(allNameAndId)
                         notifyDataSetInvalidated()
                     }
                 }
