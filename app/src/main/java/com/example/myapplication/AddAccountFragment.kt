@@ -27,22 +27,6 @@ class AddAccountFragment : Fragment() {
 
         val dbAccessClass=DBAccessClass(this.requireContext())
         val clientsList:MutableList<NameAndId> = dbAccessClass.getClientNames()
-        /*val cityList:MutableList<NameAndId> = mutableListOf()
-        if (clientData.moveToFirst()) {
-            do {
-                //val data: String = clientData.getString(clientData.getColumnIndex("data"))
-                cityList.add(NameAndId(clientData.getString(clientData.getColumnIndex("clientName")),clientData.getString(clientData.getColumnIndex("clientID"))))
-                // do what ever you want here
-            } while (clientData.moveToNext())
-        }*/
-        /*val cityList = mutableListOf(
-            NameAndId("London", "6"),
-            NameAndId("Miami", "12"),
-            NameAndId("California", "13"),
-            NameAndId("Los Angeles", "40"),
-            NameAndId("Chicago", "15"),
-            NameAndId("Houston", "61")
-        )*/
         val clientNameACTV: AutoCompleteTextView=view.findViewById<AutoCompleteTextView>(R.id.cityAutoCompleteView)
         val adapterForClientName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,clientsList)
         clientNameACTV.setAdapter(adapterForClientName)
