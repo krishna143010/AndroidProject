@@ -184,7 +184,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         var result by kotlin.properties.Delegates.notNull<Long>()
         val myDB = this.writableDatabase
         val cursor: Cursor = myDB.rawQuery(
-            "Select * from Mycustomers where fmID = ?",
+            "Select * from FundManagerAccounts where fmID = ?",
             arrayOf(fmID.toString())
         )
         if (cursor.count > 0) {
@@ -199,12 +199,12 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         var result by kotlin.properties.Delegates.notNull<Long>()
         val myDB = this.writableDatabase
         val cursor: Cursor = myDB.rawQuery(
-            "Select * from Mycustomers where fmID = ?",
+            "Select * from Clients where clientID = ?",
             arrayOf(clientID.toString())
         )
         if (cursor.count > 0) {
             //run the delete query: arguments are table     name, where clause column mane, and supplying value for    the where clause.
-            result = myDB.delete("Clients", "fmID = ?", arrayOf(clientID.toString())).toLong()
+            result = myDB.delete("Clients", "clientID = ?", arrayOf(clientID.toString())).toLong()
         }
         //close the cursor
         cursor.close () //free up the cursor return result
@@ -214,12 +214,12 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         var result by kotlin.properties.Delegates.notNull<Long>()
         val myDB = this.writableDatabase
         val cursor: Cursor = myDB.rawQuery(
-            "Select * from Mycustomers where fmID = ?",
+            "Select * from Accounts where accountID = ?",
             arrayOf(accountID.toString())
         )
         if (cursor.count > 0) {
             //run the delete query: arguments are table     name, where clause column mane, and supplying value for    the where clause.
-            result = myDB.delete("Accounts", "fmID = ?", arrayOf(accountID.toString())).toLong()
+            result = myDB.delete("Accounts", "accountID = ?", arrayOf(accountID.toString())).toLong()
         }
         //close the cursor
         cursor.close () //free up the cursor return result
@@ -229,12 +229,12 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         var result by kotlin.properties.Delegates.notNull<Long>()
         val myDB = this.writableDatabase
         val cursor: Cursor = myDB.rawQuery(
-            "Select * from Mycustomers where fmID = ?",
+            "Select * from TransactionsTable where transId = ?",
             arrayOf(transId.toString())
         )
         if (cursor.count > 0) {
             //run the delete query: arguments are table     name, where clause column mane, and supplying value for    the where clause.
-            result = myDB.delete("TransactionsTable", "fmID = ?", arrayOf(transId.toString())).toLong()
+            result = myDB.delete("TransactionsTable", "transId = ?", arrayOf(transId.toString())).toLong()
         }
         //close the cursor
         cursor.close () //free up the cursor return result
@@ -292,18 +292,21 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
     }
 
     @SuppressLint("Range")
-    fun getTransactions() : MutableList<NameAndId> {
+    fun getTransactions() : MutableList<GetTxnsDataClass> {
+
         val myDB = this. readableDatabase // read access
         val cursor : Cursor = myDB. rawQuery ("SELECT t1.*, t2.clientName AS fromClient,t3.clientName AS toClient,            t4.accountName AS fromAccount,            t5.accountName AS toAccount            FROM TransactionsTable AS t1            INNER JOIN Clients AS t2 ON t1.fromClientId = t2.clientID            INNER JOIN Clients AS t3 ON t1.toClientId = t3.clientID           INNER JOIN Accounts AS t4 ON t1.fromAccountId = t4.accountID       INNER JOIN Accounts AS t5 ON t1.toAccountId = t5.accountID  ORDER BY  dateOfTxn DESC,transId DESC", null)
         val number0fColumns = cursor. columnCount //get the number of columns count.
         val number0fRows = cursor.count // just the  number of record
         //val colNames = cursor. columnNames. joinToString " } //getting comma separated values of column names.
         //Ithat is all we need> close the cursor. return    the above variables as a string.*//*
-        val rowsList:MutableList<NameAndId> = mutableListOf()
+        val rowsList:MutableList<GetTxnsDataClass> = mutableListOf()
         if (cursor.moveToFirst()) {
             do {
+                //val dataToObj:GetTxnsDataClass=GetTxnsDataClass(cursor.getColumnIndex("transId").toInt(),Date(cursor.getColumnIndex("dateOfTxn").toString()),cursor.getColumnIndex("remarks").toString(),cursor.getColumnIndex("fromClient").toString(),cursor.getColumnIndex("toClient").toString(),cursor.getColumnIndex("fromAccount").toString(),cursor.getColumnIndex("toAccount").toString())
                 //val data: String = clientData.getString(clientData.getColumnIndex("data"))
-                rowsList.add(NameAndId(cursor.getString(cursor.getColumnIndex("clientName"))+cursor.getString(cursor.getColumnIndex("accountName")),cursor.getString(cursor.getColumnIndex("accountID"))))
+                println("Row: "+cursor.getString(cursor.getColumnIndex("transId")).toInt().toString()+" "+cursor.getString(cursor.getColumnIndex("dateOfTxn")).toString()+" "+cursor.getString(cursor.getColumnIndex("remarks")).toString())
+                rowsList.add(GetTxnsDataClass(cursor.getString(cursor.getColumnIndex("transId")).toInt(),Date(cursor.getString(cursor.getColumnIndex("dateOfTxn"))),cursor.getString(cursor.getColumnIndex("remarks")),cursor.getString(cursor.getColumnIndex("fromClient")),cursor.getString(cursor.getColumnIndex("toClient")),cursor.getString(cursor.getColumnIndex("fromAccount")),cursor.getString(cursor.getColumnIndex("toAccount"))))
                 // do what ever you want here
             } while (cursor.moveToNext())
         }

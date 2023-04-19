@@ -1,17 +1,15 @@
 package com.example.myapplication
 
 import CustomAdapter
-import ItemsViewModel
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class RecentTransactionRVFragment : Fragment() {
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,21 +28,32 @@ class RecentTransactionRVFragment : Fragment() {
         // this creates a vertical layout Manager
         recyclerview.layoutManager = LinearLayoutManager(this.requireContext())
 
-        // ArrayList of class ItemsViewModel
-        val data = ArrayList<ItemsViewModel>()
 
-        // This loop will create 20 Views containing
-        // the image with the count of view
-        for (i in 1..20) {
-            data.add(ItemsViewModel(R.drawable.simple, "Item " + i))
-        }
-
-        // This will pass the ArrayList to our Adapter
-        val adapter = CustomAdapter(data)
+        val myDBHelper=DBAccessClass(this.requireContext())
+        val txnList:MutableList<GetTxnsDataClass> = myDBHelper.getTransactions()
+        val adapter = CustomAdapter(txnList)
 
         // Setting the Adapter with the recyclerview
         recyclerview.adapter = adapter
 
+        fun refreshRV() {
+            // getting the recyclerview by its id
+            val recyclerview = requireView().findViewById<RecyclerView>(R.id.recyclerview)
+
+            // this creates a vertical layout Manager
+            recyclerview.layoutManager = LinearLayoutManager(this.requireContext())
+
+
+            val myDBHelper=DBAccessClass(this.requireContext())
+            val txnList:MutableList<GetTxnsDataClass> = myDBHelper.getTransactions()
+            val adapter = CustomAdapter(txnList)
+
+            // Setting the Adapter with the recyclerview
+            recyclerview.adapter = adapter
+        }
+
 
     }
+
+
 }

@@ -1,15 +1,20 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.core.content.ContextCompat
 
 class EntryOrRegisterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entry_or_register)
+
+        val incomingIntentExtras=intent.extras?:null
+
         val entryFragment=EntryToDashboardFragment()
         val addFMFragment=AddFundManagerFragment()
         val addClientFragment=AddClientFragment()
@@ -22,6 +27,15 @@ class EntryOrRegisterActivity : AppCompatActivity() {
         val accountButton=findViewById<Button>(R.id.button3)
         val txnButton=findViewById<Button>(R.id.button4)
         val rvButton=findViewById<Button>(R.id.button5)
+        if(incomingIntentExtras!=null){
+            println("If loop")
+            val userTransaction=supportFragmentManager.beginTransaction()
+            userTransaction.replace(R.id.layoutContainer, rvFragment)
+            userTransaction.addToBackStack(null)
+            userTransaction.commit()
+        }else{
+            println("Else loop")
+        }
 
         fmButton.setOnClickListener() {
 
