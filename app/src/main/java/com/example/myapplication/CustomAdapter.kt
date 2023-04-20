@@ -1,4 +1,3 @@
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +7,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat.createDeviceProtectedStorageContext
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.*
+import com.example.myapplication.DBAccessClass
+import com.example.myapplication.EntryOrRegisterActivity
+import com.example.myapplication.GetTxnsDataClass
+import com.example.myapplication.R
 import java.text.SimpleDateFormat
-import java.util.*
 
 
 class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
@@ -42,6 +42,7 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
         holder.fromAccount.text = "("+ItemsViewModel.fromAccount+")"
         holder.toAccount.text = "("+ItemsViewModel.toAccount+")"
         holder.remarks.text = ItemsViewModel.remarks
+        holder.txnAmount.text = ItemsViewModel.txnAmount.toString()
 //        val simpleDateFormat = SimpleDateFormat("MM/dd/yyyy")
         holder.dateOfTxn.text = SimpleDateFormat("MM/dd/yyyy").format(ItemsViewModel.dateOfTxn).toString()
 //        holder.dateOfTxn.text = ItemsViewModel.dateOfTxn.toString()
@@ -76,6 +77,7 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
             i.putExtra("fromAccount", ItemsViewModel.fromAccount)
             i.putExtra("toAccount", ItemsViewModel.toAccount)
             i.putExtra("remarks", ItemsViewModel.remarks)
+            i.putExtra("txnAmount", ItemsViewModel.txnAmount)
             i.putExtra("txnDate", holder.dateOfTxn.text.toString())
             i.putExtra("txnId", ItemsViewModel.transId)
 
@@ -86,11 +88,20 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
             bundle.putString("fromAccount", ItemsViewModel.fromAccount)
             bundle.putString("toAccount", ItemsViewModel.toAccount)
             bundle.putString("remarks", ItemsViewModel.remarks)
+            bundle.putLong("txnAmount", ItemsViewModel.txnAmount)
             bundle.putString("txnDate", holder.dateOfTxn.text.toString())
             bundle.putInt("txnId", ItemsViewModel.transId)
 //            val frag=TransactionFragment()
 //            frag.arguments=bundle
             startActivity(it.context,i, bundle)
+        }
+        holder.shareTxn.setOnClickListener {
+            val sendIntent = Intent()
+            sendIntent.action = Intent.ACTION_SEND
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "This is the text you want to share")
+            sendIntent.type = "text/plain"
+            sendIntent.setPackage("com.whatsapp")
+            startActivity(it.context,sendIntent, Bundle())
         }
 
 
@@ -114,6 +125,7 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
         val shareTxn: ConstraintLayout = itemView.findViewById(R.id.shareTxn)
         val deleteTxn: ConstraintLayout = itemView.findViewById(R.id.deleteTxn)
         val editTxn: ConstraintLayout = itemView.findViewById(R.id.editTxn)
+        val txnAmount: TextView = itemView.findViewById(R.id.txnAmount)
 
 
     }

@@ -40,6 +40,7 @@ class TransactionFragment : Fragment() {
         val toAccount=view.findViewById<AutoCompleteTextView>(R.id.toAccountId)
         val txnDate=view.findViewById<TextView>(R.id.editTxnDate)
         val remarks=view.findViewById<EditText>(R.id.remarks)
+        val txnAmount=view.findViewById<EditText>(R.id.txnAmount)
         val subTxn=view.findViewById<Button>(R.id.submitTxn)
         val dateSelectButton=view.findViewById<Button>(R.id.dateSelect)
         val adapterForClientName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,clientsList)
@@ -63,12 +64,13 @@ class TransactionFragment : Fragment() {
         fromAccount.setText(arguments?.getString("fromAccount"))
         toAccount.setText(arguments?.getString("toAccount"))
         remarks.setText(arguments?.getString("remarks"))
+        txnAmount.setText(arguments?.getLong("txnAmount").toString())
         txnDate.text = arguments?.getString("txnDate")
-        txnId= arguments?.getString("txnId")?.toLong()
+        txnId= arguments?.getInt("txnId")?.toLong()
         editTxn= arguments?.getBoolean("editTxn") ?: false
         println("Edit txn status recieved is:"+arguments?.getBoolean("editTxn") ?: false)
 
-        println("message:$message")
+        println("txn Id:$txnId")
 
         //remarks.setText(message)
 
@@ -135,6 +137,8 @@ class TransactionFragment : Fragment() {
             if(!Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]").matches(remarks.text.toString())){
                 //println("Else Loop Should not be empy from Println")
                 remarks.setError("No Space at Edges")
+            }else if(!Regex("^[1-9]\\d*(\\.\\d+)?\$").matches(txnAmount.text.toString())){
+                txnAmount.setError("Amount invalid")
             }else if(!clientsList.contains(NameAndId(fromClient.text.toString(),fromClientId.toString()))){
                 fromClient.setError("No Client with "+fromClient.text.toString()+" name available")
             }else if(!clientsList.contains(NameAndId(toClient.text.toString(),toClientId.toString()))){
@@ -151,11 +155,11 @@ class TransactionFragment : Fragment() {
                 val insertStatus:Long = if(!editTxn){
                     println("Inserting new txn")
                     myDBHelper.insertTxn(remarks.text.toString(),txnDate.text.toString(),
-                        toAccountId?.toInt(),fromAccountId?.toInt(),toClientId?.toInt(),fromClientId?.toInt())
+                        toAccountId?.toInt(),fromAccountId?.toInt(),toClientId?.toInt(),fromClientId?.toInt(),txnAmount.text.toString().toLong())
                 }else{
                     println("Updating txn")
                     myDBHelper.updateTxn(txnId.toString(),remarks.text.toString(),txnDate.text.toString(),
-                        toAccountId?.toInt(),fromAccountId?.toInt(),toClientId?.toInt(),fromClientId?.toInt())
+                        toAccountId?.toInt(),fromAccountId?.toInt(),toClientId?.toInt(),fromClientId?.toInt(),txnAmount.text.toString().toLong())
                 }
 
                 if(insertStatus>0){

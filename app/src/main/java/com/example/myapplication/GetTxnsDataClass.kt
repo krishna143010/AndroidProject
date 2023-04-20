@@ -4,6 +4,7 @@ import java.util.Date
 
 data class GetTxnsDataClass(val transId:Int,
                             val dateOfTxn:Date,
+                            val txnAmount:Long,
                             val remarks:String,
                             val fromClient:String,
                             val toClient:String,

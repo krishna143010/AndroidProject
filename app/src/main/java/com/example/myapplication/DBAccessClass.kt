@@ -36,7 +36,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
             if (txsExists != null) {
                 //create table if it does not exist
                 //myDB.execSQL ("create table TransactionsTable (transId INTEGER primary key AutoIncrement, dateOfTxn date, remarks text,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP ,toAccountId INTEGER ,FOREIGN KEY(toAccountId) REFERENCES Accounts(accountID),FOREIGN KEY(toAccountId) REFERENCES Accounts(accountID)   ) ")
-                myDB.execSQL ("create table TransactionsTable (transId INTEGER primary key AutoIncrement, dateOfTxn date,remarks text,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,toAccountId INTEGER,fromAccountId INTEGER,toClientId INTEGER,fromClientId INTEGER,FOREIGN KEY(toAccountId) REFERENCES Accounts(accountID) ,FOREIGN KEY(fromAccountId) REFERENCES Accounts(accountID),FOREIGN KEY(toClientId) REFERENCES Clients(clientID),FOREIGN KEY(fromClientId) REFERENCES Clients(clientID)) ")
+                myDB.execSQL ("create table TransactionsTable (transId INTEGER primary key AutoIncrement,txnAmount Long, dateOfTxn date,remarks text,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,toAccountId INTEGER,fromAccountId INTEGER,toClientId INTEGER,fromClientId INTEGER,FOREIGN KEY(toAccountId) REFERENCES Accounts(accountID) ,FOREIGN KEY(fromAccountId) REFERENCES Accounts(accountID),FOREIGN KEY(toClientId) REFERENCES Clients(clientID),FOREIGN KEY(fromClientId) REFERENCES Clients(clientID)) ")
             }
         }//dbNull check
     }
@@ -88,7 +88,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         //result will be -1 if the insert fails. The    datatype returned by the DB upon insert is a long: our return type is also long. return the result.
         return result
     }//Inserting data function
-    fun insertTxn (remarks:String?,dateOfTxn:String?, toAccountId: Int?, fromAccountId: Int?, toClientId: Int?, fromClientId: Int?): Long{
+    fun insertTxn (remarks:String?,dateOfTxn:String?, toAccountId: Int?, fromAccountId: Int?, toClientId: Int?, fromClientId: Int?, txnAmount: Long?): Long{
         println("Data Inserted into the table")
         val myDB = this.writableDatabase //referencing   with writable access.
         val contentValues = ContentValues () //values fOr    inserting into database
@@ -99,6 +99,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         contentValues.put ("fromAccountId", fromAccountId)
         contentValues.put ("toClientId", toClientId)
         contentValues.put ("fromClientId", fromClientId)
+        contentValues.put ("txnAmount", txnAmount)
         val result = myDB. insert ("TransactionsTable", null,contentValues) //nullcolumnhack is: when you want to instert an empty row except for the auto generated id, you will need nullcolumnHack, when content values will be null.
         //result will be -1 if the insert fails. The    datatype returned by the DB upon insert is a long: our return type is also long. return the result.
         return result
@@ -160,8 +161,8 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         cursor.close()
         return result
     } //updateClients ()
-    fun updateTxn (transId:String?,remarks:String?,dateOfTxn:String?, toAccountId: Int?, fromAccountId: Int?, toClientId: Int?, fromClientId: Int?): Long{
-        println("Data Updated into the table")
+    fun updateTxn (transId:String?,remarks:String?,dateOfTxn:String?, toAccountId: Int?, fromAccountId: Int?, toClientId: Int?, fromClientId: Int?, txnAmount: Long?): Long{
+        println("Data Updated into the table with tx Id:$transId")
         var result by kotlin.properties.Delegates.notNull<Long>()
         val myDB = this.writableDatabase //referencing   with writable access.
         val contentValues = ContentValues () //values fOr    inserting into database
@@ -172,6 +173,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         contentValues.put ("fromAccountId", fromAccountId)
         contentValues.put ("toClientId", toClientId)
         contentValues.put ("fromClientId", fromClientId)
+        contentValues.put ("txnAmount", txnAmount)
         val cursor = myDB. rawQuery ("Select * from TransactionsTable where transId = ?", arrayOf (transId))
         if (cursor.count > 0) {//if the record exists
             result = myDB. update ("TransactionsTable",
@@ -305,8 +307,8 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
             do {
                 //val dataToObj:GetTxnsDataClass=GetTxnsDataClass(cursor.getColumnIndex("transId").toInt(),Date(cursor.getColumnIndex("dateOfTxn").toString()),cursor.getColumnIndex("remarks").toString(),cursor.getColumnIndex("fromClient").toString(),cursor.getColumnIndex("toClient").toString(),cursor.getColumnIndex("fromAccount").toString(),cursor.getColumnIndex("toAccount").toString())
                 //val data: String = clientData.getString(clientData.getColumnIndex("data"))
-                println("Row: "+cursor.getString(cursor.getColumnIndex("transId")).toInt().toString()+" "+cursor.getString(cursor.getColumnIndex("dateOfTxn")).toString()+" "+cursor.getString(cursor.getColumnIndex("remarks")).toString())
-                rowsList.add(GetTxnsDataClass(cursor.getString(cursor.getColumnIndex("transId")).toInt(),Date(cursor.getString(cursor.getColumnIndex("dateOfTxn"))),cursor.getString(cursor.getColumnIndex("remarks")),cursor.getString(cursor.getColumnIndex("fromClient")),cursor.getString(cursor.getColumnIndex("toClient")),cursor.getString(cursor.getColumnIndex("fromAccount")),cursor.getString(cursor.getColumnIndex("toAccount"))))
+                println("Row: "+cursor.getString(cursor.getColumnIndex("transId")).toInt().toString()+" "+cursor.getString(cursor.getColumnIndex("dateOfTxn")).toString()+" "+cursor.getString(cursor.getColumnIndex("remarks")))
+                rowsList.add(GetTxnsDataClass(cursor.getString(cursor.getColumnIndex("transId")).toInt(),Date(cursor.getString(cursor.getColumnIndex("dateOfTxn"))),cursor.getLong(cursor.getColumnIndex("txnAmount")),cursor.getString(cursor.getColumnIndex("remarks")),cursor.getString(cursor.getColumnIndex("fromClient")),cursor.getString(cursor.getColumnIndex("toClient")),cursor.getString(cursor.getColumnIndex("fromAccount")),cursor.getString(cursor.getColumnIndex("toAccount"))))
                 // do what ever you want here
             } while (cursor.moveToNext())
         }
