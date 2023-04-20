@@ -31,18 +31,20 @@ class TransactionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val dbAccessClass=DBAccessClass(this.requireContext())
         val clientsList:MutableList<NameAndId> = dbAccessClass.getClientNames()
         val accountsList:MutableList<NameAndId> = dbAccessClass.getAccountNames()
-
         val fromClient=view.findViewById<AutoCompleteTextView>(R.id.fromClientId)
         val toClient=view.findViewById<AutoCompleteTextView>(R.id.toClientId)
         val fromAccount=view.findViewById<AutoCompleteTextView>(R.id.fromAccountId)
         val toAccount=view.findViewById<AutoCompleteTextView>(R.id.toAccountId)
-
+        val txnDate=view.findViewById<TextView>(R.id.editTxnDate)
+        val remarks=view.findViewById<EditText>(R.id.remarks)
+        val subTxn=view.findViewById<Button>(R.id.submitTxn)
+        val dateSelectButton=view.findViewById<Button>(R.id.dateSelect)
         val adapterForClientName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,clientsList)
         val adapterForAccountName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,accountsList)
+
         fromClient.setAdapter(adapterForClientName)
         toClient.setAdapter(adapterForClientName)
         fromAccount.setAdapter(adapterForAccountName)
@@ -52,12 +54,29 @@ class TransactionFragment : Fragment() {
         var toClientId: Long? =null
         var fromAccountId: Long? =null
         var toAccountId: Long? =null
+        var txnId:Long?=null
+        var editTxn:Boolean=false
+
+        val message= arguments?.getString("remarks")
+        fromClient.setText(arguments?.getString("fromClient"))
+        toClient.setText(arguments?.getString("toClient"))
+        fromAccount.setText(arguments?.getString("fromAccount"))
+        toAccount.setText(arguments?.getString("toAccount"))
+        remarks.setText(arguments?.getString("remarks"))
+        txnDate.text = arguments?.getString("txnDate")
+        txnId= arguments?.getString("txnId")?.toLong()
+        editTxn= arguments?.getBoolean("editTxn") ?: false
+        println("Edit txn status recieved is:"+arguments?.getBoolean("editTxn") ?: false)
+
+        println("message:$message")
+
+        //remarks.setText(message)
 
         fromClient.setOnItemClickListener { parent, view, position, id -> (
-                run {
-                    fromClientId=id
-                    println("Client Id is $fromClientId")
-                }
+            run {
+                fromClientId=id
+                println("Client Id is $fromClientId")
+            }
         )}
         toClient.setOnItemClickListener { parent, view, position, id -> (
             run {
@@ -66,22 +85,18 @@ class TransactionFragment : Fragment() {
             }
         )}
         fromAccount.setOnItemClickListener { parent, view, position, id -> (
-                run {
-                    fromAccountId=id
-                    println("Client Id is $fromAccountId")
-                }
-                )}
+            run {
+                fromAccountId=id
+                println("Client Id is $fromAccountId")
+            }
+        )}
         toAccount.setOnItemClickListener { parent, view, position, id -> (
-                run {
-                    toAccountId=id
-                    println("Client Id is $toAccountId")
-                }
-                )}
+            run {
+                toAccountId=id
+                println("Client Id is $toAccountId")
+            }
+        )}
 
-        val txnDate=view.findViewById<TextView>(R.id.editTxnDate)
-        val remarks=view.findViewById<EditText>(R.id.remarks)
-        val subTxn=view.findViewById<Button>(R.id.submitTxn)
-        val dateSelectButton=view.findViewById<Button>(R.id.dateSelect)
         dateSelectButton.setOnClickListener(){
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
@@ -101,11 +116,23 @@ class TransactionFragment : Fragment() {
 
         }
 
+        fun findIdFromName(givenNameIdList:List<NameAndId>,namegiven:String):Long?{
+            for (element in givenNameIdList) {
+                println(element)
+                if(element.definition==namegiven)
+                    return element.id.toLong()
+            }
+            return null
+        }
+
 
 
         subTxn.setOnClickListener(){
+            fromClientId=findIdFromName(clientsList,fromClient.text.toString())
+            toClientId=findIdFromName(clientsList,toClient.text.toString())
+            fromAccountId=findIdFromName(accountsList,fromAccount.text.toString())
+            toAccountId=findIdFromName(accountsList,toAccount.text.toString())
             if(!Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]").matches(remarks.text.toString())){
-
                 //println("Else Loop Should not be empy from Println")
                 remarks.setError("No Space at Edges")
             }else if(!clientsList.contains(NameAndId(fromClient.text.toString(),fromClientId.toString()))){
@@ -121,8 +148,16 @@ class TransactionFragment : Fragment() {
             }*/else{
                 println("iF Loop Should not be empy from Println")
                 val myDBHelper=DBAccessClass(this.requireContext())
-                val insertStatus:Long=myDBHelper.insertTxn(remarks.text.toString(),txnDate.text.toString(),
-                    toAccountId?.toInt(),fromAccountId?.toInt(),toClientId?.toInt(),fromClientId?.toInt())
+                val insertStatus:Long = if(!editTxn){
+                    println("Inserting new txn")
+                    myDBHelper.insertTxn(remarks.text.toString(),txnDate.text.toString(),
+                        toAccountId?.toInt(),fromAccountId?.toInt(),toClientId?.toInt(),fromClientId?.toInt())
+                }else{
+                    println("Updating txn")
+                    myDBHelper.updateTxn(txnId.toString(),remarks.text.toString(),txnDate.text.toString(),
+                        toAccountId?.toInt(),fromAccountId?.toInt(),toClientId?.toInt(),fromClientId?.toInt())
+                }
+
                 if(insertStatus>0){
                     Snackbar.make(it,"Txn add Success",
                         Snackbar.LENGTH_LONG).show()

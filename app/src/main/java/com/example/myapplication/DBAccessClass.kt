@@ -174,8 +174,8 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         contentValues.put ("fromClientId", fromClientId)
         val cursor = myDB. rawQuery ("Select * from TransactionsTable where transId = ?", arrayOf (transId))
         if (cursor.count > 0) {//if the record exists
-            result = myDB. update ("Clients",
-                contentValues, "fmID =?", arrayOf (transId)).toLong ()
+            result = myDB. update ("TransactionsTable",
+                contentValues, "transId =?", arrayOf (transId)).toLong ()
         }
         cursor.close()
         return result
@@ -283,7 +283,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         if (cursor.moveToFirst()) {
             do {
                 //val data: String = clientData.getString(clientData.getColumnIndex("data"))
-                rowsList.add(NameAndId(cursor.getString(cursor.getColumnIndex("clientName"))+cursor.getString(cursor.getColumnIndex("accountName")),cursor.getString(cursor.getColumnIndex("accountID"))))
+                rowsList.add(NameAndId(/*cursor.getString(cursor.getColumnIndex("clientName"))+" "+*/cursor.getString(cursor.getColumnIndex("accountName")),cursor.getString(cursor.getColumnIndex("accountID"))))
                 // do what ever you want here
             } while (cursor.moveToNext())
         }

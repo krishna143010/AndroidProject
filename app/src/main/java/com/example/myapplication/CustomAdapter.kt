@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.*
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
@@ -61,11 +62,35 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
                 /*val activityAsComInterface: CallBackToTxFragmentInterface=EntryOrRegisterActivity()
                 activityAsComInterface.refreshRV()*/
                 val i = Intent(it.context, EntryOrRegisterActivity::class.java)
-                i.putExtra("fragment", 1)
+                i.putExtra("refreshRV", 1)
                 startActivity(it.context,i, Bundle())
             }else{
                 Toast.makeText(it.context,"Delete for "+ItemsViewModel.transId+" Failed",Toast.LENGTH_LONG).show()
             }
+        }
+        holder.editTxn.setOnClickListener {
+            val i = Intent(it.context, EntryOrRegisterActivity::class.java)
+            i.putExtra("editTxn", true)
+            i.putExtra("fromClient", ItemsViewModel.fromClient)
+            i.putExtra("toClient", ItemsViewModel.toClient)
+            i.putExtra("fromAccount", ItemsViewModel.fromAccount)
+            i.putExtra("toAccount", ItemsViewModel.toAccount)
+            i.putExtra("remarks", ItemsViewModel.remarks)
+            i.putExtra("txnDate", holder.dateOfTxn.text.toString())
+            i.putExtra("txnId", ItemsViewModel.transId)
+
+            val bundle=Bundle()
+            bundle.putBoolean("editTxn", true)
+            bundle.putString("fromClient", ItemsViewModel.fromClient)
+            bundle.putString("toClient", ItemsViewModel.toClient)
+            bundle.putString("fromAccount", ItemsViewModel.fromAccount)
+            bundle.putString("toAccount", ItemsViewModel.toAccount)
+            bundle.putString("remarks", ItemsViewModel.remarks)
+            bundle.putString("txnDate", holder.dateOfTxn.text.toString())
+            bundle.putInt("txnId", ItemsViewModel.transId)
+//            val frag=TransactionFragment()
+//            frag.arguments=bundle
+            startActivity(it.context,i, bundle)
         }
 
 
