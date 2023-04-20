@@ -276,7 +276,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
     @SuppressLint("Range")
     fun getAccountNames() : MutableList<NameAndId> {
         val myDB = this. readableDatabase // read access
-        val cursor : Cursor = myDB. rawQuery ("Select accountName,accountID,clientName from Accounts INNER JOIN Clients ON Accounts.clientIDAssociated = Clients.clientID GROUP BY clientIDAssociated ORDER BY clientName ASC", null)
+        val cursor : Cursor = myDB. rawQuery ("Select accountName,accountID,clientName from Accounts INNER JOIN Clients ON Accounts.clientIDAssociated = Clients.clientID ORDER BY clientName ASC", null)
         /*val number0fColumns = cursor. columnCount //get the number of columns count.
         val number0fRows = cursor.count // just the  number of record
         //val colNames = cursor. columnNames. joinToString " } //getting comma separated values of column names.
@@ -307,7 +307,8 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
             do {
                 //val dataToObj:GetTxnsDataClass=GetTxnsDataClass(cursor.getColumnIndex("transId").toInt(),Date(cursor.getColumnIndex("dateOfTxn").toString()),cursor.getColumnIndex("remarks").toString(),cursor.getColumnIndex("fromClient").toString(),cursor.getColumnIndex("toClient").toString(),cursor.getColumnIndex("fromAccount").toString(),cursor.getColumnIndex("toAccount").toString())
                 //val data: String = clientData.getString(clientData.getColumnIndex("data"))
-                println("Row: "+cursor.getString(cursor.getColumnIndex("transId")).toInt().toString()+" "+cursor.getString(cursor.getColumnIndex("dateOfTxn")).toString()+" "+cursor.getString(cursor.getColumnIndex("remarks")))
+
+                println("Row: "+cursor.getString(cursor.getColumnIndex("transId")).toInt().toString()+" "+cursor.getString(cursor.getColumnIndex("dateOfTxn")).toString()+" "+cursor.getString(cursor.getColumnIndex("remarks"))+" dATE:"+cursor.getString(cursor.getColumnIndex("dateOfTxn")))
                 rowsList.add(GetTxnsDataClass(cursor.getString(cursor.getColumnIndex("transId")).toInt(),Date(cursor.getString(cursor.getColumnIndex("dateOfTxn"))),cursor.getLong(cursor.getColumnIndex("txnAmount")),cursor.getString(cursor.getColumnIndex("remarks")),cursor.getString(cursor.getColumnIndex("fromClient")),cursor.getString(cursor.getColumnIndex("toClient")),cursor.getString(cursor.getColumnIndex("fromAccount")),cursor.getString(cursor.getColumnIndex("toAccount"))))
                 // do what ever you want here
             } while (cursor.moveToNext())

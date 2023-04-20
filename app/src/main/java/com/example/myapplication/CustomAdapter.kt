@@ -13,7 +13,9 @@ import com.example.myapplication.DBAccessClass
 import com.example.myapplication.EntryOrRegisterActivity
 import com.example.myapplication.GetTxnsDataClass
 import com.example.myapplication.R
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
@@ -42,12 +44,26 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
         holder.fromAccount.text = "("+ItemsViewModel.fromAccount+")"
         holder.toAccount.text = "("+ItemsViewModel.toAccount+")"
         holder.remarks.text = ItemsViewModel.remarks
-        holder.txnAmount.text = ItemsViewModel.txnAmount.toString()
+
+        // Create a currency formatter
+        // Create a currency formatter
+        val formatter: NumberFormat = NumberFormat.getCurrencyInstance()
+
+// Set the currency code to USD (United States Dollar)
+
+// Set the currency code to USD (United States Dollar)
+        formatter.currency = Currency.getInstance("INR")
+
+// Format the amount
+
+// Format the amount
+        val formattedAmount: String = formatter.format(ItemsViewModel.txnAmount)
+        holder.txnAmount.text = formattedAmount
 //        val simpleDateFormat = SimpleDateFormat("MM/dd/yyyy")
         holder.dateOfTxn.text = SimpleDateFormat("MM/dd/yyyy").format(ItemsViewModel.dateOfTxn).toString()
 //        holder.dateOfTxn.text = ItemsViewModel.dateOfTxn.toString()
         if(ItemsViewModel.fromAccount=="External"){
-            holder.imageView.setImageResource(R.drawable.outgoingiconfor_foreground)
+            holder.imageView.setImageResource(R.drawable.incomingiconfor_foreground)
         }else if(ItemsViewModel.toAccount=="External"){
             holder.imageView.setImageResource(R.drawable.outgoingiconfor_foreground)
         }else{
@@ -100,7 +116,6 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(Intent.EXTRA_TEXT, "This is the text you want to share")
             sendIntent.type = "text/plain"
-            sendIntent.setPackage("com.whatsapp")
             startActivity(it.context,sendIntent, Bundle())
         }
 

@@ -10,12 +10,18 @@ class EntryOrRegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entry_or_register)
+
+        val entryToDashboardFragment=EntryToDashboardFragment()
+        val userTransaction=supportFragmentManager.beginTransaction()
+        userTransaction.replace(R.id.layoutContainer, entryToDashboardFragment)
+        //userTransaction.addToBackStack(null)
+        userTransaction.commit()
+
         val incomingIntentExtras=intent.extras?:null
         val entryFragment=EntryToDashboardFragment()
         val addFMFragment=AddFundManagerFragment()
         val addClientFragment=AddClientFragment()
         val addAccountFragment=AddAccountFragment()
-        val addTxnFragment=TransactionFragment()
         val rvFragment=RecentTransactionRVFragment()
         val fmButton=findViewById<Button>(R.id.button)
         val clientButton=findViewById<Button>(R.id.button2)
@@ -43,9 +49,9 @@ class EntryOrRegisterActivity : AppCompatActivity() {
 
                 val userTransaction=supportFragmentManager.beginTransaction()
                 val frag=TransactionFragment()
-                addTxnFragment.arguments=incomingIntentExtras
-                userTransaction.replace(R.id.layoutContainer, addTxnFragment)
-                userTransaction.addToBackStack(null)
+                frag.arguments=incomingIntentExtras
+                userTransaction.replace(R.id.layoutContainer, frag)
+                //userTransaction.addToBackStack(null)
                 userTransaction.commit()
             }
         }else{
@@ -70,9 +76,11 @@ class EntryOrRegisterActivity : AppCompatActivity() {
             userTransaction.commit()
         }
         txnButton.setOnClickListener() {
+
+            val addTxnFragment=TransactionFragment()
             val userTransaction=supportFragmentManager.beginTransaction()
             userTransaction.replace(R.id.layoutContainer, addTxnFragment)
-            userTransaction.addToBackStack(null)
+            //userTransaction.addToBackStack(null)
             userTransaction.commit()
         }
         rvButton.setOnClickListener() {

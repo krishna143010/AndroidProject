@@ -11,11 +11,14 @@ import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.util.Calendar
 import java.util.Date
 
 
@@ -44,6 +47,7 @@ class TransactionFragment : Fragment() {
         val subTxn=view.findViewById<Button>(R.id.submitTxn)
         val dateSelectButton=view.findViewById<Button>(R.id.dateSelect)
         val adapterForClientName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,clientsList)
+
         val adapterForAccountName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,accountsList)
 
         fromClient.setAdapter(adapterForClientName)
@@ -56,6 +60,7 @@ class TransactionFragment : Fragment() {
         var fromAccountId: Long? =null
         var toAccountId: Long? =null
         var txnId:Long?=null
+        var txnAmountVar:Long?=null
         var editTxn:Boolean=false
 
         val message= arguments?.getString("remarks")
@@ -64,10 +69,22 @@ class TransactionFragment : Fragment() {
         fromAccount.setText(arguments?.getString("fromAccount"))
         toAccount.setText(arguments?.getString("toAccount"))
         remarks.setText(arguments?.getString("remarks"))
-        txnAmount.setText(arguments?.getLong("txnAmount").toString())
+        if(arguments?.getLong("txnAmount")!=null) {
+            txnAmountVar = arguments?.getLong("txnAmount")?.toLong()
+
+            remarks.setText(arguments?.getString("txnAmount"))
+        }else{
+            remarks.setText("")
+        }
         txnDate.text = arguments?.getString("txnDate")
         txnId= arguments?.getInt("txnId")?.toLong()
         editTxn= arguments?.getBoolean("editTxn") ?: false
+
+        if(editTxn){
+            subTxn.text="Update Transaction"
+        }else{
+            subTxn.text="Save Transaction"
+        }
         println("Edit txn status recieved is:"+arguments?.getBoolean("editTxn") ?: false)
 
         println("txn Id:$txnId")
@@ -100,10 +117,14 @@ class TransactionFragment : Fragment() {
         )}
 
         dateSelectButton.setOnClickListener(){
+            val calendar = Calendar.getInstance()
+            val constraints: CalendarConstraints =CalendarConstraints.Builder().setStart(calendar.timeInMillis)
+                    .setValidator(DateValidatorPointBackward.now()).build()
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .setCalendarConstraints(constraints)
                 .build()
+
             datePicker.show(this.parentFragmentManager,"")
 
             datePicker.addOnPositiveButtonClickListener(){
@@ -134,12 +155,7 @@ class TransactionFragment : Fragment() {
             toClientId=findIdFromName(clientsList,toClient.text.toString())
             fromAccountId=findIdFromName(accountsList,fromAccount.text.toString())
             toAccountId=findIdFromName(accountsList,toAccount.text.toString())
-            if(!Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]").matches(remarks.text.toString())){
-                //println("Else Loop Should not be empy from Println")
-                remarks.setError("No Space at Edges")
-            }else if(!Regex("^[1-9]\\d*(\\.\\d+)?\$").matches(txnAmount.text.toString())){
-                txnAmount.setError("Amount invalid")
-            }else if(!clientsList.contains(NameAndId(fromClient.text.toString(),fromClientId.toString()))){
+            if(!clientsList.contains(NameAndId(fromClient.text.toString(),fromClientId.toString()))){
                 fromClient.setError("No Client with "+fromClient.text.toString()+" name available")
             }else if(!clientsList.contains(NameAndId(toClient.text.toString(),toClientId.toString()))){
                 toClient.setError("No Client with "+toClient.text.toString()+" name available")
@@ -147,9 +163,15 @@ class TransactionFragment : Fragment() {
                 fromAccount.setError("No Client with "+fromAccount.text.toString()+" name available")
             }else if(!accountsList.contains(NameAndId(toAccount.text.toString(),toAccountId.toString()))){
                 toAccount.setError("No Client with "+toAccount.text.toString()+" name available")
-            }/*else if(!Regex("([0][1-9]|[1][0-2]+)/([0][1-9]|[1-2][0-9]|[3][0-1]+)/(202[0-9])").matches(txnDate.text.toString())){
+            }else if(!Regex("([0][1-9]|[1][0-2])/([0][1-9]|[1-2][0-9]|[3][0-1])/(202[0-9])").matches(txnDate.text.toString())){
                 txnDate.setError("Date Invalid")
-            }*/else{
+            }else if(!Regex("^[1-9]\\d*(\\.\\d+)?\$").matches(txnAmount.text.toString())){
+                txnDate.error = null
+                txnAmount.setError("Amount invalid")
+            }else if(!Regex("[A-Za-z\\d]|[A-Za-z\\d][A-Z .a-z\\d]*[A-Za-z0-9.\\d]").matches(remarks.text.toString())){
+                //println("Else Loop Should not be empy from Println")
+                remarks.setError("Only A-Za-z 0-9. allowed")
+            }else{
                 println("iF Loop Should not be empy from Println")
                 val myDBHelper=DBAccessClass(this.requireContext())
                 val insertStatus:Long = if(!editTxn){
