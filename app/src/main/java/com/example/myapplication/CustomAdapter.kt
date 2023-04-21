@@ -108,23 +108,12 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
             i.putExtra("fmId", ItemsViewModel.fmId.toString())
 
             val bundle=Bundle()
-            /*bundle.putBoolean("editTxn", true)
-            bundle.putString("fromClient", ItemsViewModel.fromClient)
-            bundle.putString("toClient", ItemsViewModel.toClient)
-            bundle.putString("fromAccount", ItemsViewModel.fromAccount)
-            bundle.putString("toAccount", ItemsViewModel.toAccount)
-            bundle.putString("remarks", ItemsViewModel.remarks)
-            bundle.putLong("txnAmount", ItemsViewModel.txnAmount)
-            bundle.putString("txnDate", holder.dateOfTxn.text.toString())
-            bundle.putInt("txnId", ItemsViewModel.transId)*/
-//            val frag=TransactionFragment()
-//            frag.arguments=bundle
             startActivity(it.context,i, bundle)
         }
         holder.shareTxn.setOnClickListener {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "Transaction happened from "+ItemsViewModel.fromClient+" to "+ItemsViewModel.toClient+" for the Amount: "+holder.txnAmount.text.toString()+" on"+SimpleDateFormat("MM/dd/yyyy").format(ItemsViewModel.dateOfTxn).toString())
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Transaction happened from "+ItemsViewModel.fromClient+" to "+ItemsViewModel.toClient+" for the Amount: "+holder.txnAmount.text.toString()+" on "+SimpleDateFormat("MM/dd/yyyy").format(ItemsViewModel.dateOfTxn).toString())
             sendIntent.type = "text/plain"
             startActivity(it.context,sendIntent, Bundle())
         }

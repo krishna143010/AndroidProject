@@ -13,55 +13,9 @@
         android:layout_height="wrap_content"
         android:text="Welcome to Fund Manager App"
         android:textAlignment="center"
-        android:textColor="@android:color/system_accent3_100"
+        android:textColor="@color/purple_500"
         android:textSize="25dp"
         tools:targetApi="s" />
-
-    <!--<androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/layoutContainer"
-        android:layout_width="402dp"
-        android:layout_height="165dp"
-        android:layout_below="@id/textView3"
-        android:layout_marginTop="58dp"
-        android:orientation="horizontal"></androidx.appcompat.widget.LinearLayoutCompat>-->
-
-    <!--<Button
-        android:id="@+id/button"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView3"
-        android:text="FM" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/button"
-        android:layout_below="@id/textView3"
-        android:text="Client" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/button2"
-        android:layout_below="@id/textView3"
-        android:text="Account" />
-
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="72dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView3"
-        android:layout_toRightOf="@id/button3"
-        android:text="Txn" />
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="72dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView3"
-        android:layout_toRightOf="@id/button4"
-        android:text="RV" />-->
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
