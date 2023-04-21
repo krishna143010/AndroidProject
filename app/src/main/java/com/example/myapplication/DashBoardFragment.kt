@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 
 class DashBoardFragment : Fragment() {
@@ -23,10 +24,20 @@ class DashBoardFragment : Fragment() {
 
         var sessionFMID:Long?=null
         sessionFMID=arguments?.getLong("fmIdFromAct")
+        val heading=view.findViewById<TextView>(R.id.dashboard)
+        val dbAccess=DBAccessClass(this.requireContext())
+        val fmDetails:FundManagerEntity?=    dbAccess.getFmDetails(sessionFMID?.toInt())
+        if (fmDetails != null) {
+            heading.text="Hello: "+fmDetails.fmName+"!"
+        }
 
-        val fmIDTV=view.findViewById<TextView>(R.id.fmId)
+        val netList:MutableList<NameInOutDataClass> = dbAccess.getNetBals(sessionFMID?.toInt())
+        for(netItem in netList){
+            println("Net Balances  Name:"+netItem.name+" inMoney"+netItem.inMoney+" out Money"+netItem.outMoney)
+        }
 
-        fmIDTV.text=sessionFMID.toString()
+
+        //fmIDTV.text=sessionFMID.toString()
        // println("Args in Frag:"+arguments?.getString("sampleTest") +" fmIdFromAct"+arguments?.getLong("fmID").toString())
     }
 

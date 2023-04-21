@@ -315,6 +315,27 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
     }
 
     @SuppressLint("Range")
+    fun getFmDetails(fmId:Int?) : FundManagerEntity? {
+
+        val myDB = this. readableDatabase // read access
+        val cursor : Cursor = myDB. rawQuery ("Select fmID,fmName,mobileNumber,email from FundManagerAccounts WHERE fmID=? LIMIT 1", arrayOf(fmId.toString()))
+        /*val number0fColumns = cursor. columnCount //get the number of columns count.
+        val number0fRows = cursor.count // just the  number of record
+        //val colNames = cursor. columnNames. joinToString " } //getting comma separated values of column names.
+        //Ithat is all we need> close the cursor. return    the above variables as a string.*/
+        //val fmDetails: FundManagerEntity? = null
+        if (cursor.moveToFirst()) {
+            do {
+                //val data: String = clientData.getString(clientData.getColumnIndex("data"))
+                return FundManagerEntity(cursor.getString(cursor.getColumnIndex("mobileNumber")),cursor.getString(cursor.getColumnIndex("email")),cursor.getString(cursor.getColumnIndex("fmName")),fmId)
+                // do what ever you want here
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return null
+    }
+
+    @SuppressLint("Range")
     fun getTransactions(fmId:Int?) : MutableList<GetTxnsDataClass> {
 
         val myDB = this. readableDatabase // read access
@@ -332,6 +353,39 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
                 println("Row: "+cursor.getString(cursor.getColumnIndex("transId")).toInt().toString()+" "+cursor.getString(cursor.getColumnIndex("dateOfTxn")).toString()+" "+cursor.getString(cursor.getColumnIndex("remarks"))+" dATE:"+cursor.getString(cursor.getColumnIndex("dateOfTxn")))
                 rowsList.add(GetTxnsDataClass(cursor.getString(cursor.getColumnIndex("transId")).toInt(),Date(cursor.getString(cursor.getColumnIndex("dateOfTxn"))),cursor.getLong(cursor.getColumnIndex("txnAmount")),cursor.getString(cursor.getColumnIndex("remarks")),cursor.getString(cursor.getColumnIndex("fromClient")),cursor.getString(cursor.getColumnIndex("toClient")),cursor.getString(cursor.getColumnIndex("fromAccount")),cursor.getString(cursor.getColumnIndex("toAccount")),fmId))
                 // do what ever you want here
+            } while (cursor.moveToNext())
+        }
+        cursor.close ()
+        return rowsList
+    }
+
+    @SuppressLint("Range")
+    fun getNetBals(fmId: Int?) : MutableList<NameInOutDataClass> {
+
+        val myDB = this. readableDatabase // read access
+        val cursor : Cursor = myDB. rawQuery ("SELECT clientName FROM Clients  WHERE fmIdAssociated= ? ORDER BY  clientName ASC", arrayOf(fmId.toString()))
+        val rowsList:MutableList<NameInOutDataClass> = mutableListOf()
+        if (cursor.moveToFirst()) {
+            println("cursor loop"+cursor.getString(cursor.getColumnIndex("clientName")))
+            do {
+                println("cursorFinal loop")
+                val cursorFinal : Cursor = myDB. rawQuery ("SELECT (Select SUM(txnAmount) From TransactionsTable INNER JOIN Clients AS t3 ON TransactionsTable.toClientId = t3.clientID WHERE clientName=? AND fmIdAssociated=2)  AS outMoney,(Select SUM(txnAmount) From TransactionsTable INNER JOIN Clients AS t3 ON TransactionsTable.fromClientId = t3.clientID WHERE clientName=? AND fmIdAssociated=2) AS inMoney", arrayOf(cursor.getString(cursor.getColumnIndex("clientName")),cursor.getString(cursor.getColumnIndex("clientName"))))
+                if (cursorFinal.moveToFirst()) {
+                    do {
+                        rowsList.add(
+                            NameInOutDataClass(
+                                cursor.getString(
+                                    cursor.getColumnIndex(
+                                        "clientName"
+                                    )
+                                ),
+                                cursorFinal.getLong(cursorFinal.getColumnIndex("outMoney")),
+                                cursorFinal.getLong(cursorFinal.getColumnIndex("inMoney"))
+                            )
+                        )
+
+                    } while (cursorFinal.moveToNext())
+                }
             } while (cursor.moveToNext())
         }
         cursor.close ()

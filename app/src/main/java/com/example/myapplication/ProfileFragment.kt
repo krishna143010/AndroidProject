@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -28,6 +29,20 @@ class ProfileFragment : Fragment() {
         sessionFMID=arguments?.getLong("fmIdFromAct")
 
         val exitButton=view.findViewById<Button>(R.id.exit)
+        val fmNameTV=view.findViewById<TextView>(R.id.fmName)
+        val fmEmailTV=view.findViewById<TextView>(R.id.fmEmail)
+        val fmMobileTV=view.findViewById<TextView>(R.id.fmMobile)
+        val fmIdTV=view.findViewById<TextView>(R.id.fmId)
+
+        val dbAccess=DBAccessClass(this.requireContext())
+        val fmDetails:FundManagerEntity?=    dbAccess.getFmDetails(sessionFMID?.toInt())
+        if (fmDetails != null) {
+            fmNameTV.text="Name: "+fmDetails.fmName
+            fmEmailTV.text="Email: "+fmDetails.fmEmail
+            fmMobileTV.text="Mobile: "+fmDetails.fmMobile
+            fmIdTV.text="FM Id: "+fmDetails.fmId
+        }
+
 
         exitButton.setOnClickListener(){
             println("Exiting")

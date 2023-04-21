@@ -11,13 +11,50 @@
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_gravity="center"
+        android:textColor="@color/purple_500"
         android:gravity="center"
         android:textSize="24dp"
         android:text="Profile" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:id="@+id/fmId"
+        android:layout_gravity="center"
+        android:gravity="left"
+        android:textSize="22dp"
+        android:text="FM Id:" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:id="@+id/fmName"
+        android:layout_gravity="center"
+        android:gravity="left"
+        android:textSize="22dp"
+        android:text="Name:" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:id="@+id/fmEmail"
+        android:layout_gravity="center"
+        android:gravity="left"
+        android:textSize="22dp"
+        android:text="Email:" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:id="@+id/fmMobile"
+        android:layout_gravity="center"
+        android:gravity="left"
+        android:textSize="22dp"
+        android:text="Mobile:" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="54dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="130dp"
         android:id="@+id/exit"
         android:layout_gravity="center"
         android:gravity="center"

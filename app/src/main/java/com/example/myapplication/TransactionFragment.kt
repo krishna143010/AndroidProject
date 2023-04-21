@@ -86,13 +86,16 @@ class TransactionFragment : Fragment() {
         toClient.setText(arguments?.getString("toClient"))
         fromAccount.setText(arguments?.getString("fromAccount"))
         toAccount.setText(arguments?.getString("toAccount"))
-        remarks.setText(arguments?.getString("remarks")+"FMID:"+sessionFMID)
+        remarks.setText(arguments?.getString("remarks"))
         if(arguments?.getLong("txnAmount")!=null) {
             txnAmountVar = arguments?.getLong("txnAmount")?.toLong()
 
             txnAmount.setText(txnAmountVar.toString())
         }else{
             txnAmount.setText("")
+        }
+        if(arguments?.getString("remarks")==null) {
+            remarks.setText("")
         }
         txnDate.text = arguments?.getString("txnDate")
         txnId= arguments?.getInt("txnId")?.toLong()
