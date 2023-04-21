@@ -369,7 +369,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
             println("cursor loop"+cursor.getString(cursor.getColumnIndex("clientName")))
             do {
                 println("cursorFinal loop")
-                val cursorFinal : Cursor = myDB. rawQuery ("SELECT (Select SUM(txnAmount) From TransactionsTable INNER JOIN Clients AS t3 ON TransactionsTable.toClientId = t3.clientID WHERE clientName=? AND fmIdAssociated=2)  AS outMoney,(Select SUM(txnAmount) From TransactionsTable INNER JOIN Clients AS t3 ON TransactionsTable.fromClientId = t3.clientID WHERE clientName=? AND fmIdAssociated=2) AS inMoney", arrayOf(cursor.getString(cursor.getColumnIndex("clientName")),cursor.getString(cursor.getColumnIndex("clientName"))))
+                val cursorFinal : Cursor = myDB. rawQuery ("SELECT (Select SUM(txnAmount) From TransactionsTable INNER JOIN Clients AS t3 ON TransactionsTable.toClientId = t3.clientID WHERE clientName=? AND fmIdAssociated=?)  AS outMoney,(Select SUM(txnAmount) From TransactionsTable INNER JOIN Clients AS t3 ON TransactionsTable.fromClientId = t3.clientID WHERE clientName=? AND fmIdAssociated=?) AS inMoney", arrayOf(cursor.getString(cursor.getColumnIndex("clientName")),fmId.toString(),cursor.getString(cursor.getColumnIndex("clientName")),fmId.toString()))
                 if (cursorFinal.moveToFirst()) {
                     do {
                         rowsList.add(
@@ -397,7 +397,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
 
         val myDB = this.readableDatabase // read access
         val cursor: Cursor = myDB.rawQuery(
-            "SELECT clientID FROM Clients  WHERE fmIdAssociated= ?",
+            "SELECT clientID FROM Clients  WHERE fmIdAssociated= ? AND clientName != 'External'",
             arrayOf(fmId.toString())
         )
 

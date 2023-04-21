@@ -60,11 +60,15 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
 //        val simpleDateFormat = SimpleDateFormat("MM/dd/yyyy")
         holder.dateOfTxn.text = SimpleDateFormat("MM/dd/yyyy").format(ItemsViewModel.dateOfTxn).toString()
 //        holder.dateOfTxn.text = ItemsViewModel.dateOfTxn.toString()
-        if(ItemsViewModel.fromAccount=="External"){
+        println("From Acc: "+ItemsViewModel.fromAccount+ " To Acc:"+ItemsViewModel.toAccount)
+        if(ItemsViewModel.fromClient=="External"){
+            println("FromExt Matched")
             holder.imageView.setImageResource(R.drawable.incomingiconfor_foreground)
-        }else if(ItemsViewModel.toAccount=="External"){
+        }else if(ItemsViewModel.toClient=="External"){
+            println("ToExt Matched")
             holder.imageView.setImageResource(R.drawable.outgoingiconfor_foreground)
         }else{
+            println("Nothing Matched")
             holder.imageView.setImageResource(R.drawable.transfericonfor_foreground)
         }
 

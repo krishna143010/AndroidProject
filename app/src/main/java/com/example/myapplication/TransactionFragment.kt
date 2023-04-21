@@ -186,7 +186,7 @@ class TransactionFragment : Fragment() {
             }else if(!Regex("^[1-9]\\d*(\\.\\d+)?\$").matches(txnAmount.text.toString())){
                 txnDate.error = null
                 txnAmount.setError("Amount invalid")
-            }else if(!Regex("[A-Za-z\\d]|[A-Za-z\\d][A-Z .a-z\\d]*[A-Za-z0-9.\\d]").matches(remarks.text.toString())){
+            }else if(!Regex("[A-Za-z\\d]|[A-Za-z\\d][A-Z .a-z\\d]*[A-Za-z0-9.\\d]").matches(remarks.text.toString()) || remarks.text.toString().length>15){
                 //println("Else Loop Should not be empy from Println")
                 remarks.setError("Only A-Za-z 0-9. allowed and max 15 chars")
             }else{

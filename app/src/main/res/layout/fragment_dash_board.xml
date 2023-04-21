@@ -35,7 +35,7 @@
         android:layout_gravity="center"
         android:gravity="left"
         android:textSize="20dp"
-        android:text="No of Clients:" />
+        android:text="No of Clients: 0" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
         android:layout_gravity="center"
         android:gravity="left"
         android:textSize="20dp"
-        android:text="No of Accounts:" />
+        android:text="No of Accounts: 0" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,6 +55,6 @@
         android:layout_gravity="center"
         android:gravity="left"
         android:textSize="20dp"
-        android:text="No of Clients:" />
+        android:text="Total Holdings:₹ 0" />
 
 </LinearLayout>

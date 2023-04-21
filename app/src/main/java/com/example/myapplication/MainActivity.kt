@@ -7,21 +7,28 @@ import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.zip.Inflater
-
+//krushna chinthada 700742199
 class MainActivity : AppCompatActivity() {
+
+    //created bundle for sending fmid AS AR ARGUMENT TO FRAGMENT TO HOLD THE FM Id
     val bundle=Bundle()
     var fmIDForTheSession:Long?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //incoming intents
+
         val incomingIntent=intent.extras?:null
         if (incomingIntent != null) {
+            //checks for existance of intents
             fmIDForTheSession = incomingIntent.getString("fmId")?.toLong()
 
-            println("fmIDForTheSession assigned with"+fmIDForTheSession.toString())
+            //println("fmIDForTheSession assigned with"+fmIDForTheSession.toString())
+            //checks for fmID session exustance
             if (fmIDForTheSession != null) {
                 bundle.putLong("fmIdFromAct", fmIDForTheSession!!)
+                //assign to bundle
             }
         }
 
@@ -29,9 +36,9 @@ class MainActivity : AppCompatActivity() {
         if(incomingIntent!=null){
 
 
-            //fmIDForTheSession= incomingIntent.getStringExtra("fmId")?.toLong()
+            //if intent is coming from custumAdapter and asking to refresh the RV after delete
             if(incomingIntent.getInt("refreshRV")==1) {
-                println("If loop")
+                //println("If loop")
                 val rvFragment=RecentTransactionRVFragment()
                 rvFragment.arguments=bundle
                 val userTransaction=supportFragmentManager.beginTransaction()
@@ -40,17 +47,9 @@ class MainActivity : AppCompatActivity() {
                 userTransaction.commit()
             }else if(incomingIntent.getBoolean("editTxn")) {
 
-                println("After Custum Adapter in Main Act fmID Recieved is"+incomingIntent.getString("fmId"))
+                //println("After Custum Adapter in Main Act fmID Recieved is"+incomingIntent.getString("fmId"))
 
-                //val bundle=Bundle()
-                /*bundle.putInt("editTxn", 1)
-                bundle.putString("fromClient", ItemsViewModel.fromClient)
-                bundle.putString("toClient", ItemsViewModel.toClient)
-                bundle.putString("fromAccount", ItemsViewModel.fromAccount)
-                bundle.putString("toAccount", ItemsViewModel.toAccount)*/
-               // bundle.putString("remarks", "Test Remarks")
-//                bundle.putString("txnDate", holder.dateOfTxn.text.toString())
-//                bundle.putInt("txnId", ItemsViewModel.transId)
+
 
                 val userTransaction=supportFragmentManager.beginTransaction()
                 val frag=TransactionFragment()

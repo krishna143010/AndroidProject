@@ -37,7 +37,7 @@ class DashBoardFragment : Fragment() {
         val netList:MutableList<NameInOutDataClass> = dbAccess.getNetBals(sessionFMID?.toInt())
         for(netItem in netList){
             if(netItem.name=="External"){
-                totalHoldingsTV.text="Total Holdings as of now is: "+(netItem.outMoney-netItem.inMoney)
+                totalHoldingsTV.text="Total Holdings: ₹ "+(netItem.outMoney-netItem.inMoney)
             }
         }
         val noOfAccounts:Int = dbAccess.getNoOfAccounts(sessionFMID?.toInt())
