@@ -49,10 +49,13 @@ class AddFundManagerFragment : Fragment() {
                 println("iF Loop Should not be empy from Println")
                 val myDBHelper=DBAccessClass(this.requireContext())
                 val insertStatus:Long=myDBHelper.insertFundManager(fmNameEntered.text.toString(),emailEntered.text.toString(),phoneEntered.text.toString(),true,false)
+
                 if(insertStatus>0){
+                    println("FM ID of it is $insertStatus")
+                    val insertClientStatus:Long=myDBHelper.insertClients("External",true,false,insertStatus.toInt())
                     Snackbar.make(it,"Fund Manage \""+fmNameEntered.text.toString()+"\" add Success",Snackbar.LENGTH_LONG).show()
                 }else{
-                    Snackbar.make(it,"Fund Manage \""+fmNameEntered.text.toString()+"\" add Failed",Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(it,"Fund Manage \""+fmNameEntered.text.toString()+"\" already exists",Snackbar.LENGTH_LONG).show()
                 }
             }
         }

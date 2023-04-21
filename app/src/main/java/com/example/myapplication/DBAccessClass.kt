@@ -45,7 +45,8 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         myDB!!.execSQL("drop table if exists Accounts")
         myDB!!.execSQL("drop table if exists TransactionsTable")
     }
-    fun insertFundManager (fmName:String?,email:String?,mobileNumber:String?, activeStatus: Boolean?, deleteStatus: Boolean?): Long{
+    @SuppressLint("Range")
+    fun insertFundManager (fmName:String?, email:String?, mobileNumber:String?, activeStatus: Boolean?, deleteStatus: Boolean?): Long {
         println("Data Inserted into the table")
         val myDB = this.writableDatabase //referencing   with writable access.
         val contentValues = ContentValues () //values fOr    inserting into database

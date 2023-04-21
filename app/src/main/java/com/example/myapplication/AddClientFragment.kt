@@ -43,7 +43,7 @@ class AddClientFragment : Fragment() {
                     Snackbar.make(it,"Client \""+clientNameEntered.text.toString()+"\" add Success",
                         Snackbar.LENGTH_LONG).show()
                 }else{
-                    Snackbar.make(it,"Client \""+clientNameEntered.text.toString()+"\" add Failed",
+                    Snackbar.make(it,"Client \""+clientNameEntered.text.toString()+"\" already Exists",
                         Snackbar.LENGTH_LONG).show()
                 }
             }

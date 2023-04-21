@@ -88,7 +88,7 @@ class AddAccountFragment : Fragment() {
                     Snackbar.make(it,"Account \""+accountNameEditTextView.text.toString()+"\" add Success",
                         Snackbar.LENGTH_LONG).show()
                 }else{
-                    Snackbar.make(it,"Account \""+accountNameEditTextView.text.toString()+"\" add Failed",
+                    Snackbar.make(it,"Account \""+accountNameEditTextView.text.toString()+"\" already Exists",
                         Snackbar.LENGTH_LONG).show()
                 }
             }

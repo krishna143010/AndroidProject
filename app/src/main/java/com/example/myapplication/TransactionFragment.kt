@@ -168,8 +168,6 @@ class TransactionFragment : Fragment() {
             return null
         }
 
-
-
         subTxn.setOnClickListener(){
             fromClientId=findIdFromName(clientsList,fromClient.text.toString())
             toClientId=findIdFromName(clientsList,toClient.text.toString())
@@ -190,7 +188,7 @@ class TransactionFragment : Fragment() {
                 txnAmount.setError("Amount invalid")
             }else if(!Regex("[A-Za-z\\d]|[A-Za-z\\d][A-Z .a-z\\d]*[A-Za-z0-9.\\d]").matches(remarks.text.toString())){
                 //println("Else Loop Should not be empy from Println")
-                remarks.setError("Only A-Za-z 0-9. allowed")
+                remarks.setError("Only A-Za-z 0-9. allowed and max 15 chars")
             }else{
                 println("iF Loop Should not be empy from Println")
                 val myDBHelper=DBAccessClass(this.requireContext())

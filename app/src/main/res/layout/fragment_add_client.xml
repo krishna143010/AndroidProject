@@ -39,4 +39,15 @@
         android:layout_marginTop="100dp"
         android:textSize="14sp" />
 
+    <TextView
+        android:id="@+id/spinnerError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:paddingStart="16dp"
+        android:layout_below="@id/addClientButtonView"
+        android:text="Client Names as External is Reserved"
+        android:textSize="14dp"
+        android:textColor="?android:attr/colorMultiSelectHighlight"></TextView>
+
 </RelativeLayout>
