@@ -10,6 +10,7 @@
         android:layout_width="255dp"
         android:layout_height="35dp"
         android:text="Transaction Entry"
+        android:textColor="@color/purple_500"
         android:textAlignment="center"
         android:textSize="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -122,11 +123,12 @@
 
     <EditText
         android:id="@+id/txnAmount"
-        android:layout_width="378dp"
-        android:layout_height="48dp"
+        android:layout_width="380dp"
+        android:layout_height="50dp"
         android:ems="10"
         android:hint="Enter Txn Amount"
         android:inputType="number"
+        android:layout_marginLeft="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.484"
         app:layout_constraintLeft_toLeftOf="parent"

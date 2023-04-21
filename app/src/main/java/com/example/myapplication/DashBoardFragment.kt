@@ -25,16 +25,25 @@ class DashBoardFragment : Fragment() {
         var sessionFMID:Long?=null
         sessionFMID=arguments?.getLong("fmIdFromAct")
         val heading=view.findViewById<TextView>(R.id.dashboard)
+        val noOfClientsTV=view.findViewById<TextView>(R.id.totalClients)
+        val noOfAccountsTV=view.findViewById<TextView>(R.id.totalAccounts)
+        val totalHoldingsTV=view.findViewById<TextView>(R.id.totalHoldings)
         val dbAccess=DBAccessClass(this.requireContext())
         val fmDetails:FundManagerEntity?=    dbAccess.getFmDetails(sessionFMID?.toInt())
         if (fmDetails != null) {
-            heading.text="Hello: "+fmDetails.fmName+"!"
+            heading.text="Hello "+fmDetails.fmName+"!"
         }
 
         val netList:MutableList<NameInOutDataClass> = dbAccess.getNetBals(sessionFMID?.toInt())
         for(netItem in netList){
-            println("Net Balances  Name:"+netItem.name+" inMoney"+netItem.inMoney+" out Money"+netItem.outMoney)
+            if(netItem.name=="External"){
+                totalHoldingsTV.text="Total Holdings as of now is: "+(netItem.outMoney-netItem.inMoney)
+            }
         }
+        val noOfAccounts:Int = dbAccess.getNoOfAccounts(sessionFMID?.toInt())
+        val noOfClients:Int = dbAccess.getNoOfClients(sessionFMID?.toInt())
+        noOfClientsTV.text="No of Clients: "+noOfClients.toString()
+        noOfAccountsTV.text="No of Accounts:"+noOfAccounts.toString()
 
 
         //fmIDTV.text=sessionFMID.toString()

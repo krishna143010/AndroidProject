@@ -5,9 +5,8 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 import java.util.Date
-import kotlin.properties. Delegates
+
 class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",null,1) {
     override fun onConfigure(db: SQLiteDatabase) {
         db.setForeignKeyConstraintsEnabled(true)
@@ -390,5 +389,28 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         }
         cursor.close ()
         return rowsList
+    }
+
+    @SuppressLint("Range")
+    fun getNoOfClients(fmId: Int?): Int {
+
+        val myDB = this.readableDatabase // read access
+        val cursor: Cursor = myDB.rawQuery(
+            "SELECT clientID FROM Clients  WHERE fmIdAssociated= ?",
+            arrayOf(fmId.toString())
+        )
+
+        return cursor.count
+    }
+    @SuppressLint("Range")
+    fun getNoOfAccounts(fmId: Int?): Int {
+
+        val myDB = this.readableDatabase // read access
+        val cursor: Cursor = myDB.rawQuery(
+            "SELECT accountID from Accounts INNER JOIN Clients ON Accounts.clientIDAssociated = Clients.clientID WHERE fmIdAssociated= ?",
+            arrayOf(fmId.toString())
+        )
+
+        return cursor.count
     }
 }

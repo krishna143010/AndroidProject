@@ -56,6 +56,9 @@ class AddAccountFragment : Fragment() {
         )}
 
         addAccountButtonView.setOnClickListener(){
+            val spinnerErrorTV=view.findViewById<TextView>(R.id.spinnerError)
+            spinnerErrorTV.text=""
+            spinnerErrorTV.error=null
             println("Client Id is $clientId and Its validity is:"+clientsList.contains(NameAndId(clientNameACTV.text.toString(),clientId.toString())))
             currencyTypeSelected=spinner.selectedItem.toString()
             //checkClientExistance(clientNameACTV.text.toString())
@@ -72,6 +75,11 @@ class AddAccountFragment : Fragment() {
                 preferredPaymentMethod.setError("Payment method invalid")
             }else if(!clientsList.contains(NameAndId(clientNameACTV.text.toString(),clientId.toString()))){
                 clientNameACTV.setError("No Client with "+clientNameACTV.text.toString()+" name available")
+            }else if(currencyTypeSelected!="INR"){
+
+
+                spinnerErrorTV.error = "Only INR is allowed for Currency Type"
+                spinnerErrorTV.text="Only INR is allowed for Currency Type"
             }else{
                 println("iF Loop Should not be empy from Println")
                 val myDBHelper=DBAccessClass(this.requireContext())

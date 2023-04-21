@@ -6,11 +6,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
+    <TextView
+        android:layout_width="255dp"
+        android:layout_height="35dp"
+        android:text="Recent Transactions"
+        android:textColor="@color/purple_500"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textSize="24dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
         tools:itemCount="5"
         tools:listitem="@layout/support_simple_spinner_dropdown_item" />
 

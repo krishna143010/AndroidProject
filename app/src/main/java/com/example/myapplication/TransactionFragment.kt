@@ -39,18 +39,34 @@ class TransactionFragment : Fragment() {
         sessionFMID=arguments?.getLong("fmIdFromAct")
 
         var editTxn:Boolean=false
+        var fromClientId: Long? =null
+        var toClientId: Long? =null
+        var fromAccountId: Long? =null
+        var toAccountId: Long? =null
+        var txnId:Long?=null
+        var txnAmountVar:Long?=null
 
 
         val dbAccessClass=DBAccessClass(this.requireContext())
         val subTxn=view.findViewById<Button>(R.id.submitTxn)
+        val txnAmount=view.findViewById<EditText>(R.id.txnAmount)
         val dateSelectButton=view.findViewById<Button>(R.id.dateSelect)
         editTxn= arguments?.getBoolean("editTxn") ?: false
+
+        if(arguments?.getLong("txnAmount")!=null) {
+            txnAmountVar = arguments?.getLong("txnAmount")?.toLong()
+
+            txnAmount.setText(txnAmountVar.toString())
+        }else{
+            txnAmount.setText("")
+        }
 
         if(editTxn){
             subTxn.text="Update Transaction"
             sessionFMID= arguments?.getString("fmId")?.toLong()
         }else{
             subTxn.text="Save Transaction"
+            txnAmount.setText("")
             sessionFMID=arguments?.getLong("fmIdFromAct")
         }
         val clientsList:MutableList<NameAndId> = dbAccessClass.getClientNames(sessionFMID?.toInt())
@@ -61,7 +77,6 @@ class TransactionFragment : Fragment() {
         val toAccount=view.findViewById<AutoCompleteTextView>(R.id.toAccountId)
         val txnDate=view.findViewById<TextView>(R.id.editTxnDate)
         val remarks=view.findViewById<EditText>(R.id.remarks)
-        val txnAmount=view.findViewById<EditText>(R.id.txnAmount)
 
         val adapterForClientName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,clientsList)
 
@@ -72,12 +87,7 @@ class TransactionFragment : Fragment() {
         fromAccount.setAdapter(adapterForAccountName)
         toAccount.setAdapter(adapterForAccountName)
 
-        var fromClientId: Long? =null
-        var toClientId: Long? =null
-        var fromAccountId: Long? =null
-        var toAccountId: Long? =null
-        var txnId:Long?=null
-        var txnAmountVar:Long?=null
+
 
 
 
@@ -87,13 +97,7 @@ class TransactionFragment : Fragment() {
         fromAccount.setText(arguments?.getString("fromAccount"))
         toAccount.setText(arguments?.getString("toAccount"))
         remarks.setText(arguments?.getString("remarks"))
-        if(arguments?.getLong("txnAmount")!=null) {
-            txnAmountVar = arguments?.getLong("txnAmount")?.toLong()
 
-            txnAmount.setText(txnAmountVar.toString())
-        }else{
-            txnAmount.setText("")
-        }
         if(arguments?.getString("remarks")==null) {
             remarks.setText("")
         }

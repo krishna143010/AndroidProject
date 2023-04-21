@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
                 selectedFragment = TransactionFragment()
             }
             R.id.summary -> {
-                selectedFragment = RecentTransactionRVFragment()
+                selectedFragment = SummaryFragment()
             }
             R.id.history->{
                 selectedFragment = RecentTransactionRVFragment()

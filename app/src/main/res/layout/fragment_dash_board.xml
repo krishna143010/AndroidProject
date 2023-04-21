@@ -19,17 +19,42 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:layout_gravity="center"
+        android:textColor="?android:attr/colorFocusedHighlight"
+        android:gravity="center"
+        android:textSize="22dp"
+        android:text="You are having" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:id="@+id/totalClients"
+        android:paddingStart="16dp"
+        android:layout_gravity="center"
+        android:gravity="left"
+        android:textSize="20dp"
+        android:text="No of Clients:" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:paddingStart="16dp"
+        android:id="@+id/totalAccounts"
+        android:layout_gravity="center"
+        android:gravity="left"
+        android:textSize="20dp"
+        android:text="No of Accounts:" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingStart="16dp"
         android:id="@+id/totalHoldings"
         android:layout_gravity="center"
         android:gravity="left"
-        android:textSize="22dp"
-        android:text="Your total Holdings are:" />
-
-    <ListView
-        android:id="@+id/clientSummary"
-        android:layout_width="match_parent"
-        android:layout_marginTop="20dp"
-        android:layout_height="395dp" />
+        android:textSize="20dp"
+        android:text="No of Clients:" />
 
 </LinearLayout>
