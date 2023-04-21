@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
+import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 
 class AddFundManagerFragment : Fragment() {
@@ -26,6 +28,12 @@ class AddFundManagerFragment : Fragment() {
         val fmNameEntered=view.findViewById<EditText>(R.id.fmNameTextView)
         val emailEntered=view.findViewById<EditText>(R.id.emailEditTextView)
         val phoneEntered=view.findViewById<EditText>(R.id.phoneEditTextView)
+        val gotoLogin=view.findViewById<ImageButton>(R.id.gotoLogin)
+
+        gotoLogin.setOnClickListener(){
+            Navigation.findNavController(view).navigate(R.id.action_addFundManagerFragment_to_entryToDashboardFragment)
+
+        }
         addFundManagerButtonView.setOnClickListener(){
             println("fmNameEntered entered is:"+fmNameEntered.text.toString())
             val regex = Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]")

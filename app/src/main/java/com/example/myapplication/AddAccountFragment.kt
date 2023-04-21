@@ -24,9 +24,11 @@ class AddAccountFragment : Fragment() {
     @SuppressLint("ResourceType")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var sessionFMID:Long?=null
+        sessionFMID=arguments?.getLong("fmIdFromAct")
 
         val dbAccessClass=DBAccessClass(this.requireContext())
-        val clientsList:MutableList<NameAndId> = dbAccessClass.getClientNames()
+        val clientsList:MutableList<NameAndId> = dbAccessClass.getClientNames(sessionFMID?.toInt())
         val clientNameACTV: AutoCompleteTextView=view.findViewById<AutoCompleteTextView>(R.id.cityAutoCompleteView)
         val adapterForClientName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,clientsList)
         clientNameACTV.setAdapter(adapterForClientName)

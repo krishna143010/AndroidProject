@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -34,9 +35,26 @@ class TransactionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var sessionFMID:Long?=null
+        sessionFMID=arguments?.getLong("fmIdFromAct")
+
+        var editTxn:Boolean=false
+
+
         val dbAccessClass=DBAccessClass(this.requireContext())
-        val clientsList:MutableList<NameAndId> = dbAccessClass.getClientNames()
-        val accountsList:MutableList<NameAndId> = dbAccessClass.getAccountNames()
+        val subTxn=view.findViewById<Button>(R.id.submitTxn)
+        val dateSelectButton=view.findViewById<Button>(R.id.dateSelect)
+        editTxn= arguments?.getBoolean("editTxn") ?: false
+
+        if(editTxn){
+            subTxn.text="Update Transaction"
+            sessionFMID= arguments?.getString("fmId")?.toLong()
+        }else{
+            subTxn.text="Save Transaction"
+            sessionFMID=arguments?.getLong("fmIdFromAct")
+        }
+        val clientsList:MutableList<NameAndId> = dbAccessClass.getClientNames(sessionFMID?.toInt())
+        val accountsList:MutableList<NameAndId> = dbAccessClass.getAccountNames(sessionFMID?.toInt())
         val fromClient=view.findViewById<AutoCompleteTextView>(R.id.fromClientId)
         val toClient=view.findViewById<AutoCompleteTextView>(R.id.toClientId)
         val fromAccount=view.findViewById<AutoCompleteTextView>(R.id.fromAccountId)
@@ -44,8 +62,7 @@ class TransactionFragment : Fragment() {
         val txnDate=view.findViewById<TextView>(R.id.editTxnDate)
         val remarks=view.findViewById<EditText>(R.id.remarks)
         val txnAmount=view.findViewById<EditText>(R.id.txnAmount)
-        val subTxn=view.findViewById<Button>(R.id.submitTxn)
-        val dateSelectButton=view.findViewById<Button>(R.id.dateSelect)
+
         val adapterForClientName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,clientsList)
 
         val adapterForAccountName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,accountsList)
@@ -61,33 +78,29 @@ class TransactionFragment : Fragment() {
         var toAccountId: Long? =null
         var txnId:Long?=null
         var txnAmountVar:Long?=null
-        var editTxn:Boolean=false
+
+
 
         val message= arguments?.getString("remarks")
         fromClient.setText(arguments?.getString("fromClient"))
         toClient.setText(arguments?.getString("toClient"))
         fromAccount.setText(arguments?.getString("fromAccount"))
         toAccount.setText(arguments?.getString("toAccount"))
-        remarks.setText(arguments?.getString("remarks"))
+        remarks.setText(arguments?.getString("remarks")+"FMID:"+sessionFMID)
         if(arguments?.getLong("txnAmount")!=null) {
             txnAmountVar = arguments?.getLong("txnAmount")?.toLong()
 
-            remarks.setText(arguments?.getString("txnAmount"))
+            txnAmount.setText(txnAmountVar.toString())
         }else{
-            remarks.setText("")
+            txnAmount.setText("")
         }
         txnDate.text = arguments?.getString("txnDate")
         txnId= arguments?.getInt("txnId")?.toLong()
-        editTxn= arguments?.getBoolean("editTxn") ?: false
 
-        if(editTxn){
-            subTxn.text="Update Transaction"
-        }else{
-            subTxn.text="Save Transaction"
-        }
         println("Edit txn status recieved is:"+arguments?.getBoolean("editTxn") ?: false)
 
         println("txn Id:$txnId")
+        println("fm Id:$sessionFMID")
 
         //remarks.setText(message)
 
@@ -174,23 +187,42 @@ class TransactionFragment : Fragment() {
             }else{
                 println("iF Loop Should not be empy from Println")
                 val myDBHelper=DBAccessClass(this.requireContext())
-                val insertStatus:Long = if(!editTxn){
+                if(!editTxn){
                     println("Inserting new txn")
-                    myDBHelper.insertTxn(remarks.text.toString(),txnDate.text.toString(),
+                    val insertStatus:Long = myDBHelper.insertTxn(remarks.text.toString(),txnDate.text.toString(),
                         toAccountId?.toInt(),fromAccountId?.toInt(),toClientId?.toInt(),fromClientId?.toInt(),txnAmount.text.toString().toLong())
+                    if(insertStatus>0){
+                        Snackbar.make(it,"Txn add Success",
+                            Snackbar.LENGTH_LONG).show()
+                    }else{
+                        Snackbar.make(it,"Txn add Failed",
+                            Snackbar.LENGTH_LONG).show()
+                    }
                 }else{
-                    println("Updating txn")
-                    myDBHelper.updateTxn(txnId.toString(),remarks.text.toString(),txnDate.text.toString(),
-                        toAccountId?.toInt(),fromAccountId?.toInt(),toClientId?.toInt(),fromClientId?.toInt(),txnAmount.text.toString().toLong())
+                    val builder = AlertDialog.Builder(this.requireContext())
+                    builder.setTitle("Updating of Txn Id:$txnId")
+                    builder.setMessage("Are you sure to Update the Txn?")
+                    builder.setPositiveButton("OK") { dialog, which ->
+                        run{
+                            println("Updating txn")
+                            val insertStatus:Long = myDBHelper.updateTxn(txnId.toString(),remarks.text.toString(),txnDate.text.toString(),
+                                toAccountId?.toInt(),fromAccountId?.toInt(),toClientId?.toInt(),fromClientId?.toInt(),txnAmount.text.toString().toLong())
+                            if(insertStatus>0){
+                                Snackbar.make(it,"Txn Update Success",
+                                    Snackbar.LENGTH_LONG).show()
+                            }else{
+                                Snackbar.make(it,"Txn Update Failed",
+                                    Snackbar.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                    builder.setNegativeButton("Cancel") { dialog, which ->
+
+                    }
+                    builder.show()
                 }
 
-                if(insertStatus>0){
-                    Snackbar.make(it,"Txn add Success",
-                        Snackbar.LENGTH_LONG).show()
-                }else{
-                    Snackbar.make(it,"Txn add Failed",
-                        Snackbar.LENGTH_LONG).show()
-                }
+
             }
         }
 

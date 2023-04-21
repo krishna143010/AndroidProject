@@ -7,8 +7,5 @@
     <item
         android:title="Add Account"
         android:id="@+id/addAccount"/>
-    <item
-        android:title="Add Fund Manager"
-        android:id="@+id/addFM"/>
 
 </menu>

@@ -255,9 +255,10 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
     }
 
     @SuppressLint("Range")
-    fun getClientNames() : MutableList<NameAndId> {
+    fun getClientNames(fmId: Int?) : MutableList<NameAndId> {
+
         val myDB = this. readableDatabase // read access
-        val cursor : Cursor = myDB. rawQuery ("Select clientName,clientID from Clients ORDER BY clientName ASC", null)
+        val cursor : Cursor = myDB. rawQuery ("Select clientName,clientID from Clients  WHERE fmIdAssociated=? ORDER BY clientName ASC", arrayOf(fmId.toString()))
         /*val number0fColumns = cursor. columnCount //get the number of columns count.
         val number0fRows = cursor.count // just the  number of record
         //val colNames = cursor. columnNames. joinToString " } //getting comma separated values of column names.
@@ -274,9 +275,29 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         return rowsList
     }
     @SuppressLint("Range")
-    fun getAccountNames() : MutableList<NameAndId> {
+    fun getFMNames() : MutableList<NameAndId> {
         val myDB = this. readableDatabase // read access
-        val cursor : Cursor = myDB. rawQuery ("Select accountName,accountID,clientName from Accounts INNER JOIN Clients ON Accounts.clientIDAssociated = Clients.clientID ORDER BY clientName ASC", null)
+        val cursor : Cursor = myDB. rawQuery ("Select fmName,fmID from FundManagerAccounts ORDER BY fmName ASC", null)
+        /*val number0fColumns = cursor. columnCount //get the number of columns count.
+        val number0fRows = cursor.count // just the  number of record
+        //val colNames = cursor. columnNames. joinToString " } //getting comma separated values of column names.
+        //Ithat is all we need> close the cursor. return    the above variables as a string.*/
+        val rowsList:MutableList<NameAndId> = mutableListOf()
+        if (cursor.moveToFirst()) {
+            do {
+                //val data: String = clientData.getString(clientData.getColumnIndex("data"))
+                rowsList.add(NameAndId(cursor.getString(cursor.getColumnIndex("fmName")),cursor.getString(cursor.getColumnIndex("fmID"))))
+                // do what ever you want here
+            } while (cursor.moveToNext())
+        }
+        cursor.close ()
+        return rowsList
+    }
+    @SuppressLint("Range")
+    fun getAccountNames(fmId:Int?) : MutableList<NameAndId> {
+
+        val myDB = this. readableDatabase // read access
+        val cursor : Cursor = myDB. rawQuery ("Select accountName,accountID,clientName from Accounts INNER JOIN Clients ON Accounts.clientIDAssociated = Clients.clientID WHERE Clients.fmIdAssociated=? ORDER BY clientName ASC", arrayOf(fmId.toString()))
         /*val number0fColumns = cursor. columnCount //get the number of columns count.
         val number0fRows = cursor.count // just the  number of record
         //val colNames = cursor. columnNames. joinToString " } //getting comma separated values of column names.
@@ -294,10 +315,10 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
     }
 
     @SuppressLint("Range")
-    fun getTransactions() : MutableList<GetTxnsDataClass> {
+    fun getTransactions(fmId:Int?) : MutableList<GetTxnsDataClass> {
 
         val myDB = this. readableDatabase // read access
-        val cursor : Cursor = myDB. rawQuery ("SELECT t1.*, t2.clientName AS fromClient,t3.clientName AS toClient,            t4.accountName AS fromAccount,            t5.accountName AS toAccount            FROM TransactionsTable AS t1            INNER JOIN Clients AS t2 ON t1.fromClientId = t2.clientID            INNER JOIN Clients AS t3 ON t1.toClientId = t3.clientID           INNER JOIN Accounts AS t4 ON t1.fromAccountId = t4.accountID       INNER JOIN Accounts AS t5 ON t1.toAccountId = t5.accountID  ORDER BY  dateOfTxn DESC,transId DESC", null)
+        val cursor : Cursor = myDB. rawQuery ("SELECT t1.*,t2.fmIdAssociated AS fmid,t2.clientName AS fromClient,t3.clientName AS toClient,   t4.accountName AS fromAccount,  t5.accountName AS toAccount            FROM TransactionsTable AS t1  INNER JOIN Clients AS t2 ON t1.fromClientId = t2.clientID  INNER JOIN Clients AS t3 ON t1.toClientId = t3.clientID   INNER JOIN Accounts AS t4 ON t1.fromAccountId = t4.accountID INNER JOIN Accounts AS t5 ON t1.toAccountId = t5.accountID  WHERE t2.fmIdAssociated= ? ORDER BY  dateOfTxn DESC,transId DESC", arrayOf(fmId.toString()))
         val number0fColumns = cursor. columnCount //get the number of columns count.
         val number0fRows = cursor.count // just the  number of record
         //val colNames = cursor. columnNames. joinToString " } //getting comma separated values of column names.
@@ -309,7 +330,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
                 //val data: String = clientData.getString(clientData.getColumnIndex("data"))
 
                 println("Row: "+cursor.getString(cursor.getColumnIndex("transId")).toInt().toString()+" "+cursor.getString(cursor.getColumnIndex("dateOfTxn")).toString()+" "+cursor.getString(cursor.getColumnIndex("remarks"))+" dATE:"+cursor.getString(cursor.getColumnIndex("dateOfTxn")))
-                rowsList.add(GetTxnsDataClass(cursor.getString(cursor.getColumnIndex("transId")).toInt(),Date(cursor.getString(cursor.getColumnIndex("dateOfTxn"))),cursor.getLong(cursor.getColumnIndex("txnAmount")),cursor.getString(cursor.getColumnIndex("remarks")),cursor.getString(cursor.getColumnIndex("fromClient")),cursor.getString(cursor.getColumnIndex("toClient")),cursor.getString(cursor.getColumnIndex("fromAccount")),cursor.getString(cursor.getColumnIndex("toAccount"))))
+                rowsList.add(GetTxnsDataClass(cursor.getString(cursor.getColumnIndex("transId")).toInt(),Date(cursor.getString(cursor.getColumnIndex("dateOfTxn"))),cursor.getLong(cursor.getColumnIndex("txnAmount")),cursor.getString(cursor.getColumnIndex("remarks")),cursor.getString(cursor.getColumnIndex("fromClient")),cursor.getString(cursor.getColumnIndex("toClient")),cursor.getString(cursor.getColumnIndex("fromAccount")),cursor.getString(cursor.getColumnIndex("toAccount")),fmId))
                 // do what ever you want here
             } while (cursor.moveToNext())
         }

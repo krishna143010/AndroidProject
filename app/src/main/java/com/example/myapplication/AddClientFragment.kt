@@ -22,6 +22,10 @@ class AddClientFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        var sessionFMID:Long?=null
+        sessionFMID=arguments?.getLong("fmIdFromAct")
+
         val addClientButtonView= view.findViewById<Button>(R.id.addClientButtonView)
         val clientNameEntered=view.findViewById<EditText>(R.id.clientName)
         addClientButtonView.setOnClickListener(){
@@ -34,7 +38,7 @@ class AddClientFragment : Fragment() {
             }else{
                 println("iF Loop Should not be empy from Println")
                 val myDBHelper=DBAccessClass(this.requireContext())
-                val insertStatus:Long=myDBHelper.insertClients(clientNameEntered.text.toString(),true,false,1)
+                val insertStatus:Long=myDBHelper.insertClients(clientNameEntered.text.toString(),true,false,sessionFMID?.toInt())
                 if(insertStatus>0){
                     Snackbar.make(it,"Client \""+clientNameEntered.text.toString()+"\" add Success",
                         Snackbar.LENGTH_LONG).show()

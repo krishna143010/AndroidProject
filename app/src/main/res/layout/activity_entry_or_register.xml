@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#8873A3"
     android:padding="10dp"
     tools:context=".EntryOrRegisterActivity">
 
@@ -18,15 +17,15 @@
         android:textSize="25dp"
         tools:targetApi="s" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <!--<androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/layoutContainer"
-        android:layout_width="401dp"
-        android:layout_height="619dp"
+        android:layout_width="402dp"
+        android:layout_height="165dp"
         android:layout_below="@id/textView3"
         android:layout_marginTop="58dp"
-        android:orientation="horizontal"></androidx.appcompat.widget.LinearLayoutCompat>
+        android:orientation="horizontal"></androidx.appcompat.widget.LinearLayoutCompat>-->
 
-    <Button
+    <!--<Button
         android:id="@+id/button"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
@@ -62,6 +61,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textView3"
         android:layout_toRightOf="@id/button4"
-        android:text="RV" />
+        android:text="RV" />-->
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="401dp"
+        android:layout_height="600dp"
+        android:layout_below="@id/textView3"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/krushna_nav" />
 
 </RelativeLayout>

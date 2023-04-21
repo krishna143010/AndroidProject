@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/krushna_nav"
+    app:startDestination="@id/entryToDashboardFragment">
+
+    <fragment
+        android:id="@+id/entryToDashboardFragment"
+        android:name="com.example.myapplication.EntryToDashboardFragment"
+        android:label="fragment_entry_to_dashboard"
+        tools:layout="@layout/fragment_entry_to_dashboard" >
+        <action
+            android:id="@+id/action_entryToDashboardFragment_to_addFundManagerFragment"
+            app:destination="@id/addFundManagerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addFundManagerFragment"
+        android:name="com.example.myapplication.AddFundManagerFragment"
+        android:label="fragment_add_fund_manager"
+        tools:layout="@layout/fragment_add_fund_manager" >
+        <action
+            android:id="@+id/action_addFundManagerFragment_to_entryToDashboardFragment"
+            app:destination="@id/entryToDashboardFragment" />
+    </fragment>
+</navigation>

@@ -9,4 +9,5 @@ data class GetTxnsDataClass(val transId:Int,
                             val fromClient:String,
                             val toClient:String,
                             val fromAccount:String,
-                            val toAccount:String)
+                            val toAccount:String,
+                            val fmId:Int?)

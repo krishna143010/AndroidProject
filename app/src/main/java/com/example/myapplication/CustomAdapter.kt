@@ -1,3 +1,4 @@
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,10 +10,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.DBAccessClass
-import com.example.myapplication.EntryOrRegisterActivity
-import com.example.myapplication.GetTxnsDataClass
-import com.example.myapplication.R
+import com.example.myapplication.*
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -72,21 +70,32 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
 
         holder.deleteTxn.setOnClickListener {
             println("Delete clicked")
-            val myDBHelper= DBAccessClass(it.context)
-            val deleteStatus:Long=myDBHelper.deleteTxn(ItemsViewModel.transId.toLong())
-            if(deleteStatus>0){
-                Toast.makeText(it.context,"Delete for "+ItemsViewModel.transId+" Success",Toast.LENGTH_LONG).show()
-                /*val activityAsComInterface: CallBackToTxFragmentInterface=EntryOrRegisterActivity()
-                activityAsComInterface.refreshRV()*/
-                val i = Intent(it.context, EntryOrRegisterActivity::class.java)
-                i.putExtra("refreshRV", 1)
-                startActivity(it.context,i, Bundle())
-            }else{
-                Toast.makeText(it.context,"Delete for "+ItemsViewModel.transId+" Failed",Toast.LENGTH_LONG).show()
+            val builder = AlertDialog.Builder(it.context)
+            builder.setTitle("Deletion of Txn Id:"+ItemsViewModel.transId.toInt())
+            builder.setMessage("Are you sure to Delete the Txn?")
+            builder.setPositiveButton("Yes") { dialog, which ->
+                run{
+                    val myDBHelper= DBAccessClass(it.context)
+                    val deleteStatus:Long=myDBHelper.deleteTxn(ItemsViewModel.transId.toLong())
+                    if(deleteStatus>0){
+                        Toast.makeText(it.context,"Delete for "+ItemsViewModel.transId+" Success",Toast.LENGTH_LONG).show()
+                        val i = Intent(it.context, MainActivity::class.java)
+                        i.putExtra("refreshRV", 1)
+                        i.putExtra("fmId", ItemsViewModel.fmId.toString())
+                        startActivity(it.context,i, Bundle())
+                    }else{
+                        Toast.makeText(it.context,"Delete for "+ItemsViewModel.transId+" Failed",Toast.LENGTH_LONG).show()
+                    }
+
+                }
             }
+            builder.setNegativeButton("Cancel") { dialog, which ->
+            }
+            builder.show()
+
         }
         holder.editTxn.setOnClickListener {
-            val i = Intent(it.context, EntryOrRegisterActivity::class.java)
+            val i = Intent(it.context, MainActivity::class.java)
             i.putExtra("editTxn", true)
             i.putExtra("fromClient", ItemsViewModel.fromClient)
             i.putExtra("toClient", ItemsViewModel.toClient)
@@ -96,9 +105,10 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
             i.putExtra("txnAmount", ItemsViewModel.txnAmount)
             i.putExtra("txnDate", holder.dateOfTxn.text.toString())
             i.putExtra("txnId", ItemsViewModel.transId)
+            i.putExtra("fmId", ItemsViewModel.fmId.toString())
 
             val bundle=Bundle()
-            bundle.putBoolean("editTxn", true)
+            /*bundle.putBoolean("editTxn", true)
             bundle.putString("fromClient", ItemsViewModel.fromClient)
             bundle.putString("toClient", ItemsViewModel.toClient)
             bundle.putString("fromAccount", ItemsViewModel.fromAccount)
@@ -106,7 +116,7 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
             bundle.putString("remarks", ItemsViewModel.remarks)
             bundle.putLong("txnAmount", ItemsViewModel.txnAmount)
             bundle.putString("txnDate", holder.dateOfTxn.text.toString())
-            bundle.putInt("txnId", ItemsViewModel.transId)
+            bundle.putInt("txnId", ItemsViewModel.transId)*/
 //            val frag=TransactionFragment()
 //            frag.arguments=bundle
             startActivity(it.context,i, bundle)
@@ -114,7 +124,7 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
         holder.shareTxn.setOnClickListener {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "This is the text you want to share")
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Transaction happened from "+ItemsViewModel.fromClient+" to "+ItemsViewModel.toClient+" for the Amount: "+holder.txnAmount.text.toString()+" on"+SimpleDateFormat("MM/dd/yyyy").format(ItemsViewModel.dateOfTxn).toString())
             sendIntent.type = "text/plain"
             startActivity(it.context,sendIntent, Bundle())
         }

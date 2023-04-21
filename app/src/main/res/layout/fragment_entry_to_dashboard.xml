@@ -11,7 +11,6 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="34dp"
-        android:textColor="@color/white"
         android:text="Please Enter FundManager Name to Enter into your Dashboard"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,7 +18,7 @@
         app:layout_constraintVertical_bias="0.271"
         tools:layout_editor_absoluteX="16dp" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/fmNameEditTextView"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -46,7 +45,6 @@
         android:layout_height="37dp"
         android:gravity="right"
         android:text="Are you the first time User?"
-        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.286"
@@ -63,7 +61,6 @@
         android:linksClickable="false"
         android:selectAllOnFocus="false"
         android:text="Click Here"
-        android:textColor="@color/white"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

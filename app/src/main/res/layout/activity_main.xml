@@ -7,20 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/mainactivitylayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/mainactivitylayout"
         android:layout_marginBottom="65dp"
-        android:padding="5dp">
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragmentContainerView"
-            android:name="com.example.myapplication.AddFundManagerFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout="@layout/fragment_add_fund_manager" />
-    </RelativeLayout>
+        android:orientation="vertical"
+        android:padding="5dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
