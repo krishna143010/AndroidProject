@@ -14,7 +14,7 @@ import com.example.myapplication.*
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
-
+//Krushna Chinthada
 
 class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
     //val context:Context = TODO()
@@ -60,18 +60,18 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
 //        val simpleDateFormat = SimpleDateFormat("MM/dd/yyyy")
         holder.dateOfTxn.text = SimpleDateFormat("MM/dd/yyyy").format(ItemsViewModel.dateOfTxn).toString()
 //        holder.dateOfTxn.text = ItemsViewModel.dateOfTxn.toString()
-        println("From Acc: "+ItemsViewModel.fromAccount+ " To Acc:"+ItemsViewModel.toAccount)
+       // println("From Acc: "+ItemsViewModel.fromAccount+ " To Acc:"+ItemsViewModel.toAccount)
         if(ItemsViewModel.fromClient=="External"){
-            println("FromExt Matched")
+            //println("FromExt Matched")
             holder.imageView.setImageResource(R.drawable.incomingiconfor_foreground)
         }else if(ItemsViewModel.toClient=="External"){
-            println("ToExt Matched")
+           // println("ToExt Matched")
             holder.imageView.setImageResource(R.drawable.outgoingiconfor_foreground)
         }else{
-            println("Nothing Matched")
+            //println("Nothing Matched")
             holder.imageView.setImageResource(R.drawable.transfericonfor_foreground)
         }
-
+        //if delete clicked on RV
         holder.deleteTxn.setOnClickListener {
             println("Delete clicked")
             val builder = AlertDialog.Builder(it.context)
@@ -98,6 +98,7 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
             builder.show()
 
         }
+        //if Edit Clicked
         holder.editTxn.setOnClickListener {
             val i = Intent(it.context, MainActivity::class.java)
             i.putExtra("editTxn", true)
@@ -114,6 +115,7 @@ class CustomAdapter(private val mList: MutableList<GetTxnsDataClass>) : Recycler
             val bundle=Bundle()
             startActivity(it.context,i, bundle)
         }
+        //Share clicked
         holder.shareTxn.setOnClickListener {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND

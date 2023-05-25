@@ -11,7 +11,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
-
+//Krushna Chinthada
 class AddFundManagerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +35,7 @@ class AddFundManagerFragment : Fragment() {
 
         }
         addFundManagerButtonView.setOnClickListener(){
-            println("fmNameEntered entered is:"+fmNameEntered.text.toString())
+            //println("fmNameEntered entered is:"+fmNameEntered.text.toString())
             val regex = Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]")
             if(!Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]").matches(fmNameEntered.text.toString())){
 
@@ -46,12 +46,14 @@ class AddFundManagerFragment : Fragment() {
             }else if(!Regex("^(\\+\\d{1,3}[- ]?)?\\d{10}\$").matches(phoneEntered.text.toString())){
                 phoneEntered.setError("+xx xxxxxxxxxx")
             }else{
-                println("iF Loop Should not be empy from Println")
+                //println("iF Loop Should not be empy from Println")
                 val myDBHelper=DBAccessClass(this.requireContext())
+                //insert FM
                 val insertStatus:Long=myDBHelper.insertFundManager(fmNameEntered.text.toString(),emailEntered.text.toString(),phoneEntered.text.toString(),true,false)
 
                 if(insertStatus>0){
-                    println("FM ID of it is $insertStatus")
+                    //println("FM ID of it is $insertStatus")
+                    //Insert Client as external
                     val insertClientStatus:Long=myDBHelper.insertClients("External",true,false,insertStatus.toInt())
                     Snackbar.make(it,"Fund Manage \""+fmNameEntered.text.toString()+"\" add Success",Snackbar.LENGTH_LONG).show()
                 }else{

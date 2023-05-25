@@ -138,11 +138,10 @@ class TransactionFragment : Fragment() {
 
         dateSelectButton.setOnClickListener(){
             val calendar = Calendar.getInstance()
-            val constraints: CalendarConstraints =CalendarConstraints.Builder().setStart(calendar.timeInMillis)
-                    .setValidator(DateValidatorPointBackward.now()).build()
+            //val constraints: CalendarConstraints =CalendarConstraints.Builder().setStart(calendar.timeInMillis).build()
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
-                .setCalendarConstraints(constraints)
+                //.setCalendarConstraints(constraints)
                 .build()
 
             datePicker.show(this.parentFragmentManager,"")
@@ -152,7 +151,7 @@ class TransactionFragment : Fragment() {
 
                 val simpleDateFormat = SimpleDateFormat("MM/dd/yyyy")
                 val dateTime = simpleDateFormat.format(dateSelected).toString()
-                println("Clicked OK:"+dateTime)
+                //println("Clicked OK:"+dateTime)
                 txnDate.setText(dateTime)
 
             }

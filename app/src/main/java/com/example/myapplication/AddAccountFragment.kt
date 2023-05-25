@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
-
+//krushna chinthada
 class AddAccountFragment : Fragment() {
 
 
@@ -25,11 +25,14 @@ class AddAccountFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var sessionFMID:Long?=null
-        sessionFMID=arguments?.getLong("fmIdFromAct")
+        sessionFMID=arguments?.getLong("fmIdFromAct") //for FmID from Activity
 
-        val dbAccessClass=DBAccessClass(this.requireContext())
+        val dbAccessClass=DBAccessClass(this.requireContext()) //Inst DBClass to access Database
+        ////get clients list
         val clientsList:MutableList<NameAndId> = dbAccessClass.getClientNames(sessionFMID?.toInt())
+
         val clientNameACTV: AutoCompleteTextView=view.findViewById<AutoCompleteTextView>(R.id.cityAutoCompleteView)
+
         val adapterForClientName = CustomFilterAdapter(this.requireContext(),android.R.layout.select_dialog_singlechoice,clientsList)
         clientNameACTV.setAdapter(adapterForClientName)
         var clientId: Long? =null
@@ -37,9 +40,10 @@ class AddAccountFragment : Fragment() {
         val accountNameEditTextView=view.findViewById<EditText>(R.id.accountNameEditTextView)
         val accountIdentifierEditTextView=view.findViewById<EditText>(R.id.accountIdentifierEditTextView)
         val preferredPaymentMethod=view.findViewById<EditText>(R.id.preferredPaymentMethodEditTextView)
+        //spinner
         val spinner: Spinner = view.findViewById(R.id.accountCurrencyTypeSpinner)
         var currencyTypeSelected:String=""
-
+        //supply adapter to spinner
         ArrayAdapter.createFromResource(
             this.requireContext(),
             R.array.currency_types,
@@ -48,24 +52,21 @@ class AddAccountFragment : Fragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
         }
+        //save client Id
         clientNameACTV.setOnItemClickListener { parent, view, position, id -> (
             run {
                 clientId=id
-                println("Client Id is $clientId")
+                //println("Client Id is $clientId")
             }
         )}
-
+        //on submit
         addAccountButtonView.setOnClickListener(){
             val spinnerErrorTV=view.findViewById<TextView>(R.id.spinnerError)
             spinnerErrorTV.text=""
             spinnerErrorTV.error=null
             println("Client Id is $clientId and Its validity is:"+clientsList.contains(NameAndId(clientNameACTV.text.toString(),clientId.toString())))
             currencyTypeSelected=spinner.selectedItem.toString()
-            //checkClientExistance(clientNameACTV.text.toString())
-
-            /*currencyTypeSelected=spinner.selectedItem.toString()
-            println("Field Value "+clientNameACTV.text.toString()+" cityList Value "+cityList.getOrNull(clientId.toString().toInt()).toString())*/
-            if(!Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]").matches(accountNameEditTextView.text.toString())){
+           if(!Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]").matches(accountNameEditTextView.text.toString())){
 
                 //println("Else Loop Should not be empy from Println")
                 accountNameEditTextView.setError("Account Name should Contain Only Alphabets and Space in between")
@@ -81,8 +82,9 @@ class AddAccountFragment : Fragment() {
                 spinnerErrorTV.error = "Only INR is allowed for Currency Type"
                 spinnerErrorTV.text="Only INR is allowed for Currency Type"
             }else{
-                println("iF Loop Should not be empy from Println")
+                //println("iF Loop Should not be empy from Println")
                 val myDBHelper=DBAccessClass(this.requireContext())
+               //insert account
                 val insertStatus:Long=myDBHelper.insertAccounts(accountNameEditTextView.text.toString(),accountIdentifierEditTextView.text.toString(),preferredPaymentMethod.text.toString(),true, currencyTypeSelected.toString(),clientId.toString().toInt())
                 if(insertStatus>0){
                     Snackbar.make(it,"Account \""+accountNameEditTextView.text.toString()+"\" add Success",

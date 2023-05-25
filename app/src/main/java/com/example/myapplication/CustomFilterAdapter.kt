@@ -35,7 +35,7 @@ class CustomFilterAdapter(
         }
         try {
             val city: NameAndId = getItem(position)
-            println("NameAndId List city.definition:"+city.definition)
+            //println("NameAndId List city.definition:"+city.definition)
 
             val cityAutoCompleteView = convertView!!.findViewById<View>(android.R.id.text1) as TextView
             cityAutoCompleteView.text = city.definition
@@ -54,6 +54,7 @@ class CustomFilterAdapter(
                     if (constraint != null) {
                         val citySuggestion: MutableList<NameAndId> = ArrayList()
                         for (city in allNameAndId) {
+                            //checks the contains
                             if (city.definition.toLowerCase().contains(constraint.toString().toLowerCase())
                             ) {
                                 citySuggestion.add(city)

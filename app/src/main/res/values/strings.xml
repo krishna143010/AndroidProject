@@ -8,6 +8,11 @@
         <item>INR</item>
         <item>USD</item>
     </string-array>
+    <string-array name="sort_criteria">
+        <item>Txn Date</item>
+        <item>Txn Id</item>
+        <item>Recent Updates</item>
+    </string-array>
     <string-array name="Languages">
         <item>Java</item>
         <item>Kotlin</item>

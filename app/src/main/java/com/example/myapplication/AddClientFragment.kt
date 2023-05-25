@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import com.google.android.material.snackbar.Snackbar
-
+//krushna chinthada
 class AddClientFragment : Fragment() {
 
 
@@ -24,11 +24,11 @@ class AddClientFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         var sessionFMID:Long?=null
-        sessionFMID=arguments?.getLong("fmIdFromAct")
+        sessionFMID=arguments?.getLong("fmIdFromAct") //FMID from Act
 
         val addClientButtonView= view.findViewById<Button>(R.id.addClientButtonView)
         val clientNameEntered=view.findViewById<EditText>(R.id.clientName)
-        addClientButtonView.setOnClickListener(){
+        addClientButtonView.setOnClickListener(){//Submit Click
             println("clientNameEntered entered is:"+clientNameEntered.text.toString())
             val regex = Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]")
             if(!Regex("[A-Za-z]|[A-Za-z][A-Z a-z]*[A-Za-z]").matches(clientNameEntered.text.toString())){
@@ -36,7 +36,8 @@ class AddClientFragment : Fragment() {
                 //println("Else Loop Should not be empy from Println")
                 clientNameEntered.setError("Name invalid")
             }else{
-                println("iF Loop Should not be empy from Println")
+                //println("iF Loop Should not be empy from Println")
+                //Val Success go for Insert
                 val myDBHelper=DBAccessClass(this.requireContext())
                 val insertStatus:Long=myDBHelper.insertClients(clientNameEntered.text.toString(),true,false,sessionFMID?.toInt())
                 if(insertStatus>0){

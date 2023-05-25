@@ -33,8 +33,9 @@ class SummaryFragment : Fragment() {
         )
         val arrayAdapter: ArrayAdapter<String>*/
         for(netItem in netList){
-            println("Net Balances  Name:"+netItem.name+" inMoney"+netItem.inMoney+" out Money"+netItem.outMoney)
+            //println("Net Balances  Name:"+netItem.name+" inMoney"+netItem.inMoney+" out Money"+netItem.outMoney)
             if(netItem.name=="External"){
+                //If External it calculates for Net FM Aval Monay
                 totHoldingsTV.text="Total Holdings as of now is: "+(netItem.outMoney-netItem.inMoney)
             }else{
                 clientSummaryStringList.add("Client Name:"+netItem.name+" Amount: ₹"+(netItem.inMoney-netItem.outMoney))

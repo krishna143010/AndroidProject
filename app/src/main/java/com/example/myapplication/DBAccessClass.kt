@@ -104,6 +104,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         //result will be -1 if the insert fails. The    datatype returned by the DB upon insert is a long: our return type is also long. return the result.
         return result
     }//Inserting data function
+    /*
     fun updateFundManager (fmID:String?,fmName:String?,email:String?,mobileNumber:String?, activeStatus: Boolean?, deleteStatus: Boolean?): Long{
         println("Data Updated into the table")
         var result by kotlin.properties.Delegates.notNull<Long>()
@@ -160,7 +161,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         }
         cursor.close()
         return result
-    } //updateClients ()
+    } //updateClients ()*/
     fun updateTxn (transId:String?,remarks:String?,dateOfTxn:String?, toAccountId: Int?, fromAccountId: Int?, toClientId: Int?, fromClientId: Int?, txnAmount: Long?): Long{
         println("Data Updated into the table with tx Id:$transId")
         var result by kotlin.properties.Delegates.notNull<Long>()
@@ -182,7 +183,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         cursor.close()
         return result
     } //updateClients ()
-    fun deleteFundManager (fmID: Long) : Long {
+   /* fun deleteFundManager (fmID: Long) : Long {
         var result by kotlin.properties.Delegates.notNull<Long>()
         val myDB = this.writableDatabase
         val cursor: Cursor = myDB.rawQuery(
@@ -226,7 +227,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         //close the cursor
         cursor.close () //free up the cursor return result
         return result
-    }
+    }*/
     fun deleteTxn (transId: Long) : Long {
         var result by kotlin.properties.Delegates.notNull<Long>()
         val myDB = this.writableDatabase
@@ -242,7 +243,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         cursor.close () //free up the cursor return result
         return result
     }
-
+/*
     fun getDataCount () : String {
         val myDB = this. readableDatabase // read access
         val cursor : Cursor = myDB. rawQuery ("Select * from MyCustomers", null)
@@ -252,7 +253,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         //Ithat is all we need> close the cursor. return    the above variables as a string.
         cursor.close ()
         return "There are SnumberOfRows rows in myCustomers table and $number0fColumns columns in each row."
-    }
+    }*/
 
     @SuppressLint("Range")
     fun getClientNames(fmId: Int?) : MutableList<NameAndId> {

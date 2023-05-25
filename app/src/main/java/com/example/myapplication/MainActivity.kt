@@ -39,64 +39,57 @@ class MainActivity : AppCompatActivity() {
             //if intent is coming from custumAdapter and asking to refresh the RV after delete
             if(incomingIntent.getInt("refreshRV")==1) {
                 //println("If loop")
+                //instantiate RV Frag
                 val rvFragment=RecentTransactionRVFragment()
+                //supply args
                 rvFragment.arguments=bundle
                 val userTransaction=supportFragmentManager.beginTransaction()
                 userTransaction.replace(R.id.mainactivitylayout, rvFragment)
                 userTransaction.addToBackStack(null)
-                userTransaction.commit()
+                userTransaction.commit() //commit
             }else if(incomingIntent.getBoolean("editTxn")) {
-
-                //println("After Custum Adapter in Main Act fmID Recieved is"+incomingIntent.getString("fmId"))
-
-
-
+                //in case of edit txn
                 val userTransaction=supportFragmentManager.beginTransaction()
                 val frag=TransactionFragment()
-                frag.arguments=incomingIntent
+                //instantiate frag
+                frag.arguments=incomingIntent //supply args
                 userTransaction.replace(R.id.mainactivitylayout, frag)
-                //userTransaction.addToBackStack(null)
+                //commit
                 userTransaction.commit()
             }else{
-                println("FM ID for this session:$fmIDForTheSession")
+                //println("FM ID for this session:$fmIDForTheSession")
+                //if no refresh or edit reciedved just display the home frag
 
-                val dashboardFragment = DashBoardFragment()
+                val dashboardFragment = DashBoardFragment() //inst frag
 
-                dashboardFragment.arguments = bundle
+                dashboardFragment.arguments = bundle //supply args
                 val userTransaction = supportFragmentManager.beginTransaction()
                 userTransaction.replace(R.id.mainactivitylayout, dashboardFragment)
                 userTransaction.addToBackStack(null)
-                userTransaction.commit()
+                userTransaction.commit() //commit
             }
         }else{
             println("Else loop")
 
         }
-
-
+        //bottom nav insta
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomnav)
-        bottomNav.setOnNavigationItemSelectedListener(navListener)
-
-
-
-
-
-
-
+        bottomNav.setOnNavigationItemSelectedListener(navListener) //when clicked supply the navListner
 
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val myInflater=menuInflater
-        myInflater.inflate(R.menu.top_nav_bar,menu)
+        myInflater.inflate(R.menu.top_nav_bar,menu) //inflate top navs
         return super.onCreateOptionsMenu(menu)
-    }
+    }//onCreateOptionsMenu
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        lateinit var selectedFragment: Fragment
+    override fun onOptionsItemSelected(item: MenuItem): Boolean { //On One of top option clicked
+        lateinit var selectedFragment: Fragment //Created common Frag Var
+        //switch to corresponding item
         when(item.itemId){
             R.id.addClient -> {
-                println("Add client clicked")
+                //println("Add client clicked")
                 selectedFragment=AddClientFragment()
             }
             R.id.addAccount->{
