@@ -361,6 +361,41 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
     }
 
     @SuppressLint("Range")
+    fun getTransactions(fmId:Int?,filterOption:String,sortOption:String) : MutableList<GetTxnsDataClass> {
+        println("Filter option:$filterOption Sort Option:$sortOption")
+        val myDB = this. readableDatabase // read access
+        val cursor: Cursor
+        if(filterOption!="All") {
+            cursor = myDB.rawQuery(
+                "SELECT t1.*,t2.fmIdAssociated AS fmid,t2.clientName AS fromClient,t3.clientName AS toClient,   t4.accountName AS fromAccount,  t5.accountName AS toAccount            FROM TransactionsTable AS t1  INNER JOIN Clients AS t2 ON t1.fromClientId = t2.clientID  INNER JOIN Clients AS t3 ON t1.toClientId = t3.clientID   INNER JOIN Accounts AS t4 ON t1.fromAccountId = t4.accountID INNER JOIN Accounts AS t5 ON t1.toAccountId = t5.accountID  WHERE t2.fmIdAssociated= ? AND ? IN(toClient, fromClient) ORDER BY  $sortOption DESC,transId DESC",
+                arrayOf(fmId.toString(),filterOption.toString()))
+
+        }else{
+            cursor = myDB.rawQuery(
+                "SELECT t1.*,t2.fmIdAssociated AS fmid,t2.clientName AS fromClient,t3.clientName AS toClient,   t4.accountName AS fromAccount,  t5.accountName AS toAccount            FROM TransactionsTable AS t1  INNER JOIN Clients AS t2 ON t1.fromClientId = t2.clientID  INNER JOIN Clients AS t3 ON t1.toClientId = t3.clientID   INNER JOIN Accounts AS t4 ON t1.fromAccountId = t4.accountID INNER JOIN Accounts AS t5 ON t1.toAccountId = t5.accountID  WHERE t2.fmIdAssociated= ? ORDER BY  $sortOption DESC,transId DESC",
+                arrayOf(fmId.toString())
+            )
+        }
+        val number0fColumns = cursor. columnCount //get the number of columns count.
+        val number0fRows = cursor.count // just the  number of record
+        //val colNames = cursor. columnNames. joinToString " } //getting comma separated values of column names.
+        //Ithat is all we need> close the cursor. return    the above variables as a string.*//*
+        val rowsList:MutableList<GetTxnsDataClass> = mutableListOf()
+        if (cursor.moveToFirst()) {
+            do {
+                //val dataToObj:GetTxnsDataClass=GetTxnsDataClass(cursor.getColumnIndex("transId").toInt(),Date(cursor.getColumnIndex("dateOfTxn").toString()),cursor.getColumnIndex("remarks").toString(),cursor.getColumnIndex("fromClient").toString(),cursor.getColumnIndex("toClient").toString(),cursor.getColumnIndex("fromAccount").toString(),cursor.getColumnIndex("toAccount").toString())
+                //val data: String = clientData.getString(clientData.getColumnIndex("data"))
+
+                println("Row: "+cursor.getString(cursor.getColumnIndex("transId")).toInt().toString()+" "+cursor.getString(cursor.getColumnIndex("dateOfTxn")).toString()+" "+cursor.getString(cursor.getColumnIndex("remarks"))+" dATE:"+cursor.getString(cursor.getColumnIndex("dateOfTxn")))
+                rowsList.add(GetTxnsDataClass(cursor.getString(cursor.getColumnIndex("transId")).toInt(),Date(cursor.getString(cursor.getColumnIndex("dateOfTxn"))),cursor.getLong(cursor.getColumnIndex("txnAmount")),cursor.getString(cursor.getColumnIndex("remarks")),cursor.getString(cursor.getColumnIndex("fromClient")),cursor.getString(cursor.getColumnIndex("toClient")),cursor.getString(cursor.getColumnIndex("fromAccount")),cursor.getString(cursor.getColumnIndex("toAccount")),fmId))
+                // do what ever you want here
+            } while (cursor.moveToNext())
+        }
+        cursor.close ()
+        return rowsList
+    }
+
+    @SuppressLint("Range")
     fun getNetBals(fmId: Int?) : MutableList<NameInOutDataClass> {
 
         val myDB = this. readableDatabase // read access

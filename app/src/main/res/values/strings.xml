@@ -9,9 +9,9 @@
         <item>USD</item>
     </string-array>
     <string-array name="sort_criteria">
-        <item>Txn Date</item>
-        <item>Txn Id</item>
-        <item>Recent Updates</item>
+        <item >dateOfTxn</item>
+        <item >transId</item>
+        <item>timestamp</item>
     </string-array>
     <string-array name="Languages">
         <item>Java</item>
