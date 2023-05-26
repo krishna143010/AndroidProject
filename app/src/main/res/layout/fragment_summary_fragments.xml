@@ -9,16 +9,16 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
-        android:textColor="@color/purple_500"
         android:gravity="center"
-        android:textSize="24dp"
-        android:text="Summary" />
+        android:text="Summary"
+        android:textColor="@color/purple_500"
+        android:textSize="20dp" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:id="@+id/totalHoldings"
         android:layout_gravity="center"
         android:textColor="?android:attr/colorFocusedHighlight"
@@ -26,12 +26,31 @@
         android:gravity="left"
         android:textSize="18dp"
         android:text="Your total Holdings are:" />
+    <TextView
+        android:layout_width="match_parent"
+        android:text="Client Summary"
+        android:textSize="18dp"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"></TextView>
 
     <ListView
         android:id="@+id/clientSummary"
         android:layout_width="match_parent"
-        android:layout_height="352dp"
+        android:layout_height="150dp"
         android:paddingStart="16dp"
-        android:layout_marginTop="20dp" />
-
+        android:layout_marginTop="10dp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:text="Account Summary"
+        android:textSize="18dp"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"></TextView>
+    <ListView
+        android:id="@+id/accountSummary"
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:paddingStart="16dp"
+        android:layout_marginTop="10dp" />
 </LinearLayout>

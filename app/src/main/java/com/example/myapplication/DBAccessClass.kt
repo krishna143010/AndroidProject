@@ -5,6 +5,9 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import java.sql.Timestamp
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import java.util.Date
 
 class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",null,1) {
@@ -29,7 +32,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
             val actExists: Unit? = myDB?.execSQL("SELECT name FROM sqlite_master WHERE type='table' AND name = 'Accounts'")
             if (actExists != null) {
                 //create table if it does not exist
-                myDB.execSQL ("create table Accounts (accountID INTEGER primary key AutoIncrement, accountNumber text, upiId text,activeStatus boolean,currencyType text, accountName text,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,clientIDAssociated INTEGER ,UNIQUE(accountName, clientIDAssociated),FOREIGN KEY(clientIDAssociated) REFERENCES Clients(clientID)) ")
+                myDB.execSQL ("create table Accounts (accountID INTEGER primary key AutoIncrement, accountNumber text, upiId text,activeStatus boolean,currencyType text, accountName text,timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,clientIDAssociated INTEGER ,fmIdForAccount INTEGER,UNIQUE(accountName, fmIdForAccount),FOREIGN KEY(clientIDAssociated) REFERENCES Clients(clientID),FOREIGN KEY(fmIdForAccount) REFERENCES FundManagerAccounts(fmID)) ")
             }
             val txsExists: Unit? = myDB?.execSQL("SELECT name FROM sqlite_master WHERE type='table' AND name = 'TransactionsTable'")
             if (txsExists != null) {
@@ -73,7 +76,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         //result will be -1 if the insert fails. The    datatype returned by the DB upon insert is a long: our return type is also long. return the result.
         return result
     }//Inserting data function
-    fun insertAccounts (accountName:String?,accountNumber:String?, upiId: String?, status: Boolean?, currencyType: String?, clientIDAssociated: Int?): Long{
+    fun insertAccounts (accountName:String?,accountNumber:String?, upiId: String?, status: Boolean?, currencyType: String?, clientIDAssociated: Int?, fmIdAssociated: Int?): Long{
         println("Data Inserted into the table")
         val myDB = this.writableDatabase //referencing   with writable access.
         val contentValues = ContentValues () //values fOr    inserting into database
@@ -84,6 +87,7 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         contentValues.put ("activeStatus", status)
         contentValues.put ("currencyType", currencyType)
         contentValues.put ("clientIDAssociated", clientIDAssociated)
+        contentValues.put ("fmIdForAccount", fmIdAssociated)
         val result = myDB. insert ("Accounts", null,contentValues) //nullcolumnhack is: when you want to instert an empty row except for the auto generated id, you will need nullcolumnHack, when content values will be null.
         //result will be -1 if the insert fails. The    datatype returned by the DB upon insert is a long: our return type is also long. return the result.
         return result
@@ -175,6 +179,8 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
         contentValues.put ("toClientId", toClientId)
         contentValues.put ("fromClientId", fromClientId)
         contentValues.put ("txnAmount", txnAmount)
+        contentValues.put ("timestamp", DateTimeFormatter.ISO_INSTANT.format(Instant.now())
+        )
         val cursor = myDB. rawQuery ("Select * from TransactionsTable where transId = ?", arrayOf (transId))
         if (cursor.count > 0) {//if the record exists
             result = myDB. update ("TransactionsTable",
@@ -413,6 +419,38 @@ class DBAccessClass(context: Context): SQLiteOpenHelper(context,"FundManagerDB",
                                 cursor.getString(
                                     cursor.getColumnIndex(
                                         "clientName"
+                                    )
+                                ),
+                                cursorFinal.getLong(cursorFinal.getColumnIndex("outMoney")),
+                                cursorFinal.getLong(cursorFinal.getColumnIndex("inMoney"))
+                            )
+                        )
+
+                    } while (cursorFinal.moveToNext())
+                }
+            } while (cursor.moveToNext())
+        }
+        cursor.close ()
+        return rowsList
+    }
+    @SuppressLint("Range")
+    fun getNetBalsOfAccounts(fmId: Int?) : MutableList<NameInOutDataClass> {
+
+        val myDB = this. readableDatabase // read access
+        val cursor : Cursor = myDB. rawQuery ("SELECT accountName FROM Accounts  WHERE fmIdForAccount= ? ORDER BY  clientIDAssociated ASC", arrayOf(fmId.toString()))
+        val rowsList:MutableList<NameInOutDataClass> = mutableListOf()
+        if (cursor.moveToFirst()) {
+            println("cursor loop"+cursor.getString(cursor.getColumnIndex("accountName")))
+            do {
+                println("cursorFinal loop")
+                val cursorFinal : Cursor = myDB. rawQuery ("SELECT (Select SUM(txnAmount) From TransactionsTable INNER JOIN Accounts AS t3 ON TransactionsTable.toAccountId = t3.accountID  INNER JOIN Clients AS t4 ON TransactionsTable.toClientId = t4.clientID WHERE accountName=? AND fmIdForAccount=?  AND clientName!='External')  AS outMoney,(Select SUM(txnAmount) From TransactionsTable INNER JOIN Accounts AS t3 ON TransactionsTable.fromAccountId = t3.accountID  INNER JOIN Clients AS t4 ON TransactionsTable.fromClientId = t4.clientID WHERE accountName=? AND fmIdForAccount=? AND clientName!='External') AS inMoney", arrayOf(cursor.getString(cursor.getColumnIndex("accountName")),fmId.toString(),cursor.getString(cursor.getColumnIndex("accountName")),fmId.toString()))
+                if (cursorFinal.moveToFirst()) {
+                    do {
+                        rowsList.add(
+                            NameInOutDataClass(
+                                cursor.getString(
+                                    cursor.getColumnIndex(
+                                        "accountName"
                                     )
                                 ),
                                 cursorFinal.getLong(cursorFinal.getColumnIndex("outMoney")),

@@ -85,7 +85,7 @@ class AddAccountFragment : Fragment() {
                 //println("iF Loop Should not be empy from Println")
                 val myDBHelper=DBAccessClass(this.requireContext())
                //insert account
-                val insertStatus:Long=myDBHelper.insertAccounts(accountNameEditTextView.text.toString(),accountIdentifierEditTextView.text.toString(),preferredPaymentMethod.text.toString(),true, currencyTypeSelected.toString(),clientId.toString().toInt())
+                val insertStatus:Long=myDBHelper.insertAccounts(accountNameEditTextView.text.toString(),accountIdentifierEditTextView.text.toString(),preferredPaymentMethod.text.toString(),true, currencyTypeSelected.toString(),clientId.toString().toInt(),sessionFMID?.toInt())
                 if(insertStatus>0){
                     Snackbar.make(it,"Account \""+accountNameEditTextView.text.toString()+"\" add Success",
                         Snackbar.LENGTH_LONG).show()
